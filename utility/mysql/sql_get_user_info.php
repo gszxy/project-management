@@ -7,9 +7,12 @@
  */
 namespace SqlUsrDataFuncs
 {
-    include 'utility/basic/db.php';
+    include '../basic/db.php';
     use DatabaseBasic;
     use Exception;
+    //定义一些异常类……
+    class UserNotFoundException extends Exception {}
+    //
     function get_usr_info($usr_name) : array
     {
         $con_obj = DatabaseBasic::get_connection_obj();
@@ -23,7 +26,7 @@ namespace SqlUsrDataFuncs
             if($find_name_query->num_rows > 1)
                 throw new Exception("username not unqiue");
             else if($finf_name_query->num_rows == 0)
-                throw new Exception("user not found");
+                throw new UserNotFoundException("user not found");
             $result = $find_name_query->get_result();
             return mysqli_fetch_array($result,MYSQLI_ASSOC);
         }

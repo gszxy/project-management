@@ -19,6 +19,7 @@ class DatabaseBasic
     private static $password = '';
     private static $dbname = '';
     private static $dbport = 3389;
+
     private static $status = 0;//状态： 1->已连接 0->未连接 -1->出错
     private static $connection;
     private static function db_connect()
