@@ -12,6 +12,7 @@ namespace SqlUsrDataFuncs
     use Exception;
     //定义一些异常类……
     class UserNotFoundException extends Exception {}
+    class DBErrorException extends Exception {}
     //
     function get_usr_info($usr_name) : array
     {
@@ -30,6 +31,24 @@ namespace SqlUsrDataFuncs
             $result = $find_name_query->get_result();
             return mysqli_fetch_array($result,MYSQLI_ASSOC);
         }
+    }
+    function check_if_usrname_exist(string $name) : bool
+    {
+        $con_obj = DatabaseBasic::get_connection_obj();
+        $_name = $con_obj->real_escape_string($usr_name);
+        $find_psd_query = $con_obj -> prepare("SELECT psd_sha1 FROM users WHERE name = ? ");
+        $find_psd_query->bind_param('s', $_name);
+        
+        if($find_psd_query->execute()) //这个函数返回值是查询是否成功
+        {
+            $find_psd_query -> store_result();
+            if($find_psd_query->num_rows == 0)
+                return true;
+            else
+                return false;
+        }
+        else
+            throw new DBErrorException();
     }
 
     function check_password($usr_name,$psd_sha1) : array
@@ -55,9 +74,16 @@ namespace SqlUsrDataFuncs
         }
     }
 
-    function add_usr($name,$psd_sha1,$email)
+    function add_usr($name,$psd_sha1,$email) : void
     {
-    
+        $con_obj = DatabaseBasic::get_connection_obj();
+        $_name = $con_obj->real_escape_string($usr_name);
+        $_email = $con_obj->real_escape_string($email);
+        $add_usr_query = $con_obj -> prepare("INSERT INTO users(name,psd_sha1,email) VALUES(?,?,?)");
+        $add_usr_query -> bind_param("sss",$_name,$psd_sha1,$_email);
+        $is_successful = $add_usr_query -> execute();
+        if(!$is_successful)
+            throw new DBErrorException();
     }
 
     function change_psd($name,$new_psd_sha1)

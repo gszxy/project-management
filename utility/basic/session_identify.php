@@ -36,7 +36,7 @@ namespace SessionProcess
                     //下面检查加密的session_psd是否合法，确认是否允许登录。
                     $claimed_name = $_COOKIE["username"];
                     $claimed_s_psd = $_COOKIE["session_psd"];
-                    $legal_s_psd = sha1($claimed_name.$magic_str);
+                    $legal_s_psd = sha1($claimed_name.self::$magic_str);
                     //用户名和magic_str拼接后使用sha1算法单项加密，然后比对用户提交的session_psd（页面上注册或登录时使用相同方法生成）
                     //这样一来可以确定保持登录状态的cookie不是伪造的
                     if($claimed_s_psd == $legal_s_psd)
@@ -63,7 +63,7 @@ namespace SessionProcess
         public function usr_login_set_session_and_cookie
                (string $name,string $is_to_remember = false,int $valid_time = 2592000) : void
         {
-            $new_s_psd = sha1($name.$magic_str);
+            $new_s_psd = sha1($name.self::$magic_str);
             $_SESSION["username"] = $name;
             $_SESSION["session_psd"] = $new_s_psd;
             if($is_to_remember)

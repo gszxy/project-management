@@ -15,7 +15,11 @@ namespace WebsiteUser
     include '../basic/session_identify.php';
     include '../mysql/sql_get_user_info.php';
     use SessionProcess\SessionUser;
-    use function SqlUsrDataFuncs\check_password;
+    use function SqlUsrDataFuncs;
+    use Exception;
+                    //定义一些异常类
+    class UsernameOccupiedException extends Exception{}
+    //
     class User
     {
         private /*SessionUser*/ $session;
@@ -23,7 +27,7 @@ namespace WebsiteUser
         private $name;
         public function __construct()
         {
-            $session = new SessionUser();
+            $this -> session = new SessionUser();
             $info = $session -> get_user_login_info();
             $this->is_login = $info['is_login'];
             $this->name = $info['name'];
@@ -34,17 +38,31 @@ namespace WebsiteUser
             /*返回值格式举例：["is_usr_exist"=>true,"is_psd_ok"=>true];*/
             $this->is_login = $array_check_result["is_psd_ok"];
             if($this->is_login)
+            {
                 $this->name = $usrname;
+                $this->session->usr_login_set_session_and_cookie($usrname,$is_to_remember);
+            }
             return $array_check_result;            
         }
         public function register(string $usrname, string $psd_sha1, string $email) : void
         {
-            
+            if(check_if_usrname_exist($name))
+                throw new UsernameOccupiedException;
+            add_usr($usrname, $psd_sha1, $email);
         }
         public function get_user_info()
         {
             
         }
-        
+        public function logout()
+        {
+            if($this->is_login)
+                $this->session->usr_logout_clean_session_and_cookie();
+            $this->is_login = false;
+        }
+        public function get_is_login()
+        {
+            return $this->is_login;
+        }
     }
 }
