@@ -7,7 +7,7 @@
  */
 namespace SqlUsrDataFuncs
 {
-    include '../basic/db.php';
+    include __DIR__ . '../basic/db.php';
     use DatabaseBasic;
     use Exception;
     //定义一些异常类……

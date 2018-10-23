@@ -12,8 +12,8 @@
 
 namespace WebsiteUser
 {
-    include '../basic/session_identify.php';
-    include '../mysql/sql_get_user_info.php';
+    include __DIR__ . '../basic/session_identify.php';
+    include __DIR__ . '../mysql/sql_get_user_info.php';
     use SessionProcess\SessionUser;
     use function SqlUsrDataFuncs;
     use Exception;
