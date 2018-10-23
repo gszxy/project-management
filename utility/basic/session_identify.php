@@ -23,7 +23,7 @@ namespace SessionProcess
         private $usr_name;
         private $session_psd;  
    
-        public function __construct(int $type = 0,string $name = null, string $tele_session_psd = '') : void
+        public function __construct(int $type = 0,string $name = null, string $tele_session_psd = '')
         {//type参数：0->浏览器  1->手机app。目前不支持手机app访问，三个参数全部无效。
             session_start();
             $this->is_login = false;
@@ -55,13 +55,13 @@ namespace SessionProcess
         }
         public function get_user_login_info() : array
         {
-            if($is_login)
+            if($this->is_login)
                 return ['is_login' => true,'name' =>$this->name];
             else
                 return ['is_login' => false,'name' =>''];
         }
         public function usr_login_set_session_and_cookie
-               (string $name,string $is_to_remember = false,int $valid_time = 2592000) : void
+               (string $name,bool $is_to_remember = false,int $valid_time = 2592000) : void
         {
             $new_s_psd = sha1($name.self::$magic_str);
             $_SESSION["username"] = $name;

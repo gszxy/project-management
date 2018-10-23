@@ -12,23 +12,25 @@
 
 namespace WebsiteUser
 {
-    include __DIR__ . '../basic/session_identify.php';
-    include __DIR__ . '../mysql/sql_get_user_info.php';
+    include __DIR__ . '/../basic/session_identify.php';
+    include __DIR__ . '/../mysql/sql_get_user_info.php';
     use SessionProcess\SessionUser;
-    use function SqlUsrDataFuncs;
+    use function SqlUsrDataFuncs\check_if_usrname_exist;
+    use function SqlUsrDataFuncs\check_password;
+    use function SqlUsrDataFuncs\add_usr;
     use Exception;
                     //定义一些异常类
     class UsernameOccupiedException extends Exception{}
     //
     class User
     {
-        private /*SessionUser*/ $session;
+        private $session;/*SessionUser*/
         private $is_login;
         private $name;
         public function __construct()
         {
             $this -> session = new SessionUser();
-            $info = $session -> get_user_login_info();
+            $info = $this -> session -> get_user_login_info();
             $this->is_login = $info['is_login'];
             $this->name = $info['name'];
         }
@@ -46,7 +48,7 @@ namespace WebsiteUser
         }
         public function register(string $usrname, string $psd_sha1, string $email) : void
         {
-            if(check_if_usrname_exist($name))
+            if(check_if_usrname_exist($usrname))
                 throw new UsernameOccupiedException;
             add_usr($usrname, $psd_sha1, $email);
         }

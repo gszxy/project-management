@@ -17,9 +17,9 @@
 class DatabaseBasic
 {
     private static $address = '127.0.0.1';
-    private static $username = 'dusk';
-    private static $password = '141768965*2b';
-    private static $dbname = 'MB_player_info';
+    private static $username = '';
+    private static $password = '';
+    private static $dbname = '';
     
     private static $status = 0;//状态： 1->已连接 0->未连接 -1->出错
     private static $connection;

@@ -1,5 +1,5 @@
 <?php
-include '../../utility/mysql/sql_get_user_info.php';
+include '/../../utility/mysql/sql_get_user_info.php';
 use function SqlUsrDataFuncs\check_if_usrname_exist;
 
 /*
@@ -9,7 +9,7 @@ use function SqlUsrDataFuncs\check_if_usrname_exist;
  *
  * 测试状态：尚未测试
  */
-header("Content-type:text/json");
+header('Content-type:text/json');
 
 $name = $_GET["name_to_check"];
 

@@ -7,7 +7,7 @@
  */
 namespace SqlUsrDataFuncs
 {
-    include __DIR__ . '../basic/db.php';
+    include __DIR__ . '/../basic/db.php';
     use DatabaseBasic;
     use Exception;
     //定义一些异常类……
@@ -35,7 +35,7 @@ namespace SqlUsrDataFuncs
     function check_if_usrname_exist(string $name) : bool
     {
         $con_obj = DatabaseBasic::get_connection_obj();
-        $_name = $con_obj->real_escape_string($usr_name);
+        $_name = $con_obj->real_escape_string($name);
         $find_psd_query = $con_obj -> prepare("SELECT psd_sha1 FROM users WHERE name = ? ");
         $find_psd_query->bind_param('s', $_name);
         
@@ -43,9 +43,9 @@ namespace SqlUsrDataFuncs
         {
             $find_psd_query -> store_result();
             if($find_psd_query->num_rows == 0)
-                return true;
-            else
                 return false;
+            else
+                return true;
         }
         else
             throw new DBErrorException();
@@ -55,7 +55,7 @@ namespace SqlUsrDataFuncs
     {
         $con_obj = DatabaseBasic::get_connection_obj();
         $_name = $con_obj->real_escape_string($usr_name);
-        $find_psd_query = $con_obj -> prepare("SELECT psd_sha1 FROM users WHERE name = ? ");
+        $find_psd_query = $con_obj -> prepare("SELECT psd_sha1 FROM users WHERE 'name' = ? ");
         $find_psd_query->bind_param('s', $_name);
         
         if($find_psd_query->execute()) //这个函数返回值是查询是否成功
@@ -77,9 +77,11 @@ namespace SqlUsrDataFuncs
     function add_usr($name,$psd_sha1,$email) : void
     {
         $con_obj = DatabaseBasic::get_connection_obj();
-        $_name = $con_obj->real_escape_string($usr_name);
+        $_name = $con_obj->real_escape_string($name);
         $_email = $con_obj->real_escape_string($email);
-        $add_usr_query = $con_obj -> prepare("INSERT INTO users(name,psd_sha1,email) VALUES(?,?,?)");
+        $add_usr_query = $con_obj -> prepare("INSERT INTO users (`name`,`psd_sha1`,`email`) VALUES( ? , ? , ? )");
+        if($add_usr_query == false)
+            throw new DBErrorException($con_obj->error);
         $add_usr_query -> bind_param("sss",$_name,$psd_sha1,$_email);
         $is_successful = $add_usr_query -> execute();
         if(!$is_successful)

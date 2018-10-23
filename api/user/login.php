@@ -10,7 +10,8 @@ use WebsiteUser\User;
  * 
  * 
  */
-header("Content-type:text/json");
+header('Content-type:text/json');
+header("Access-Control-Allow-Origin: *.knightdusk.cn");
 
 $usr = new User();
 
