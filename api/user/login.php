@@ -11,7 +11,7 @@ use WebsiteUser\User;
  * 
  */
 header('Content-type:text/json');
-header("Access-Control-Allow-Origin: *.knightdusk.cn");
+header("Access-Control-Allow-Origin: *");
 
 $usr = new User();
 

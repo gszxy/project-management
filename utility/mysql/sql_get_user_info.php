@@ -26,7 +26,7 @@ namespace SqlUsrDataFuncs
             $find_name_query -> store_result();
             if($find_name_query->num_rows > 1)
                 throw new Exception("username not unqiue");
-            else if($finf_name_query->num_rows == 0)
+            else if($find_name_query->num_rows == 0)
                 throw new UserNotFoundException("user not found");
             $result = $find_name_query->get_result();
             return mysqli_fetch_array($result,MYSQLI_ASSOC);
@@ -41,8 +41,8 @@ namespace SqlUsrDataFuncs
         
         if($find_psd_query->execute()) //这个函数返回值是查询是否成功
         {
-            $find_psd_query -> store_result();
-            if($find_psd_query->num_rows == 0)
+            $result = $find_psd_query->get_result();
+            if($result->num_rows == 0)
                 return false;
             else
                 return true;
@@ -55,17 +55,17 @@ namespace SqlUsrDataFuncs
     {
         $con_obj = DatabaseBasic::get_connection_obj();
         $_name = $con_obj->real_escape_string($usr_name);
-        $find_psd_query = $con_obj -> prepare("SELECT psd_sha1 FROM users WHERE 'name' = ? ");
+        $find_psd_query = $con_obj -> prepare("SELECT psd_sha1 FROM users WHERE `name` = ? ");
         $find_psd_query->bind_param('s', $_name);
         
         if($find_psd_query->execute()) //这个函数返回值是查询是否成功
         {
-            $find_psd_query -> store_result();
-            if($find_psd_query->num_rows > 1)
+			$result = $find_psd_query->get_result();
+            if($result->num_rows > 1)
                 throw new Exception("username not unqiue");
-            if($find_psd_query->num_rows == 0)
+            if($result->num_rows == 0)
                 return ["is_usr_exist"=>false,"is_psd_ok"=>false];
-                $result = $find_psd_query->get_result();
+                
             $real_psd_sha1 = mysqli_fetch_array($result,MYSQLI_ASSOC)["psd_sha1"];
             if($psd_sha1 == $real_psd_sha1)
                 return ["is_usr_exist"=>true,"is_psd_ok"=>true];
