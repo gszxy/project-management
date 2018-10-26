@@ -1,7 +1,54 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html"  charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登录项目管理</title>
+<meta charset="UTF-8">
+<link href="/page/css/out/bootstrap.css" rel="stylesheet" type="text/css">
+	<script src="JavaScript/out/jquery-1.11.3.min.js"></script>
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+<style>
+div {
+	background-color: lightgrey;
+	width: 300px;
+	margin: 25px;
+	border: 1px solid #a1a1a1;
+	padding: 20px 30px 10px 60px;
+	background: #69C;
+	border-radius: 25px;
+}
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #69C;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+li {
+	float: left;
+}
+li a {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+}
+li a:hover {
+	background-color: #069;
+}
+</style>
+</head>
+<body>
 <ul>
   <li><a class="active" href="">回到首页</a></li>
   <li><a href="">我的任务</a></li>
@@ -9,72 +56,119 @@
   <li style="float:right"><a class="active" href="">登录</a></li>
   <li style="float:right"><a class="active" href="">注册</a></li>
 </ul>
-</ul>
 <title>注册</title>
-<h1 align="center" style="font-family:Arial, Helvetica, sans-serif;font-size:40px;color:#069">
-Registration
-</h1>
-<style>
-div {           <!--这是注册界面的边框css-->
-    background-color: lightgrey;
-    width: 300px;
-    margin: 25px;
-	border:1px solid #a1a1a1;
-	padding:20px 30px 10px 60px; 
-	background:#69C;
-	border-radius:25px;
-	
-}
-ul {             <!--这以及下面几个是导航条css-->
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #69C;
-	list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-li a:hover {
-    background-color: #069;
-}
-
-</style>
-</head>
-<body>
-
-<p align="center" style="font-mamily:微软雅黑;font-size:30px;color:#">欢迎来到注册界面！<br>请填写您的完整信息以完成注册。</p>  
+<h1 align="center" style="font-family:Arial, Helvetica, sans-serif;font-size:40px;color:#069"> Registration </h1>
+<p align="center" style="font-mamily:微软雅黑;font-size:30px;color:#">欢迎来到注册界面！<br>
+  请填写您的完整信息以完成注册。</p>
 <br>
+<div style="margin:auto">
+  <form style="font-family:微软雅黑;color=#" id="freg">
+    <span style="color:white">1.用户名:</span>
+    <input type="text" id="username"   name="username"/>
+    <br>
+    <br>
+    <span style="color:white">2. 密 码:</span>
+    <input type="password" id="password"  name="password"/>
+    <br>
+    <br>
+    <span style="color:white">3. 邮 箱:</span>
+    <input type="text" id="email"  name="email"/>
+    <br>
+    <br>
+    <input type="button" value="完成注册" id="send" style="margin:0px 85px;padding:10px 20px;color: black"/>
+	<br>
+	 <span id="warning" style="color: brown"></span>
+  </form>
+</div>
+<script>
 
-<div style="margin:auto;color:white">
-	<form style="font-family:微软雅黑;color=#">
+	is_psd_ok = false;
+	is_email_ok = false;
+	//这两个是全局变量（偷个懒）
 
-1.用户名:
-<input type="text" name="username" /><br><br> 
-2. 性 别 :
-<input type="radio" name="gender" value="male" />男&nbsp;&nbsp;&nbsp;
-<input type="radio" name="gender" value="female" />女&nbsp;&nbsp;&nbsp;
-<input type="radio" name="gender" value="others" />保密<br>
-<br>
-3. 密 码 :
-<input type="text" name="password" /><br><br>
-4. 邮 箱 :
-<input type="text" name="email" /><br><br>
-<input type="submit" value="完成注册" style="margin:0px 85px;padding:10px 20px"/>
-</form>
-	</div>
+$('#send').click(function()//点击注册时执行函数
+{
+	var info_to_submit = validateForm();	
+	if(!info_to_submit)//如果用户填写的信息不符合要求
+		return;
+	//下面调用后端接口
+	$.post('https://prj.knightdusk.cn/api/user/register.php',{username:info_to_submit.username,password:info_to_submit.username,email:info_to_submit.email},
+		   function(data){//回调函数，data为接口返回的json字符串自动解析为json对象
 
+				if(data.result == true)
+				{
+					alert("注册成功！");
+					window.location.href('task.html');
+				}
+				else
+				{
+					var info = data.info;
+					alert("注册失败。原因：" + info);
+				}
+		   });
+});
+function validateForm() //这个函数验证
+{
+	var psd=$('#password').val();
+	var name=$('#username').val();
+	var email=$('#email').val();
+
+	//获取这三个输入框里的值
+	if (name==null || name =="")
+  {
+    alert("必须填写用户名");
+    return false;
+  }
+
+    else if (psd==null || psd=="")
+  {
+    alert("必须填写密码");
+    return false;
+  }
+
+	else if (email==null || email =="")
+	{
+	   alert("请填写电子邮件地址");
+       return false;
+	}
+	else if(!is_psd_ok)
+	{
+	   alert("密码格式不符合要求");
+       return false;
+	}
+	else if(!is_email_ok)
+	{
+	   alert("电子邮件地址格式不合法");
+       return false;
+	}
+	return {'username':name,'psd':password,'email':email};
+	//创建一个对象，稍后序列化为json对象
+}
+$('#password').blur(function(){//密码输入框失去焦点时，检查密码长度是否合法
+	var psd_legth = $('#password').val().length
+	if(psd_legth < 6 ||psd_legth > 20)
+	{
+		is_psd_ok = false;
+		$('#warning').text ('密码长度必须为6-20位');
+	}
+	else
+	{
+		is_psd_ok = true;
+	}
+});
+$('#email').blur(function(){//密码输入框失去焦点时，检查密码长度是否合法
+	var email = $('#email').val();
+	var pattern = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+	if(!pattern.test(email))//正则表达式匹配邮件格式
+	{
+		is_email_ok = false;
+		$('#warning').text('邮件地址不合法');
+	}
+	else
+	{
+		is_email_ok = true;
+	}
+});
+	</script>
 </body>
 </html>
