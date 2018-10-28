@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 
 /*此类负责总处理网站会话变量和cookie
@@ -15,7 +15,7 @@ namespace SessionProcess
 {
     class SessionUser
     {
-        private static $magic_str = "e32dcf$^fgw2QW@!@SVAS";
+        private static $magic_str = "";
         //这个字符串的值对系统安全很重要，不得泄露。
         //用于生成验证保存登录状态的session变量和cookie。
         //修改此字符串使得网站所有用户保存的登录状态失效
@@ -49,14 +49,14 @@ namespace SessionProcess
             }
             if($this->is_login)
             {
-                $this->username = $_SESSION["username"];
+                $this->usr_name = $_SESSION["username"];
                 $this->session_psd = $_SESSION["session_psd"];
             }           
         }
         public function get_user_login_info() : array
         {
             if($this->is_login)
-                return ['is_login' => true,'name' =>$this->name];
+                return ['is_login' => true,'name' =>$this->usr_name];
             else
                 return ['is_login' => false,'name' =>''];
         }
@@ -71,6 +71,8 @@ namespace SessionProcess
                 setcookie("username",$name,time()+$valid_time);
                 setcookie("session_psd",$new_s_psd,time()+$valid_time);
             }
+            $this->is_login = true;
+            $this->usr_name = $name;
         }
         public function usr_logout_clean_session_and_cookie()
         {

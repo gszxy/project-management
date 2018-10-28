@@ -27,14 +27,16 @@ namespace WebsiteUser
         private $session;/*SessionUser*/
         private $is_login;
         private $name;
+        private $usr_id;
         private $usr_privilege = 1; //用户获取任务信息的权限等级
         public function __construct()
         {
-            $this -> session = new SessionUser();
-            $info = $this -> session -> get_user_login_info();
+            $this ->session = new SessionUser();
+            $info = $this->session->get_user_login_info();
             $this->is_login = $info['is_login'];
             $this->name = $info['name'];
-            $this->usr_privilege  = get_usr_info($this->name)["identity"];
+            //$this->usr = $info['id'];
+            //$this->usr_privilege  = 
         }
         public function login(string $usrname, string $psd_sha1,bool $is_to_remember = false) : array 
         {
@@ -56,7 +58,8 @@ namespace WebsiteUser
         }
         public function get_user_info()
         {
-            
+            //todo:进一步返回用户权限等级
+            return ["username"=>$this->name/*,"id"=>$this->usr_id*/];
         }
         public function logout()
         {

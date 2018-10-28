@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>登录项目管理</title>
+<title>注册</title>
 <meta charset="UTF-8">
 <link href="/page/css/out/bootstrap.css" rel="stylesheet" type="text/css">
 	<script src="JavaScript/out/jquery-1.11.3.min.js"></script>
@@ -53,16 +53,16 @@ li a:hover {
   <li><a class="active" href="">回到首页</a></li>
   <li><a href="">我的任务</a></li>
   <li><a href="">联系我们</a></li>
-  <li style="float:right"><a class="active" href="">登录</a></li>
-  <li style="float:right"><a class="active" href="">注册</a></li>
+  <li style="float:right"><a class="active" href="login.html">登录</a></li>
+  <li style="float:right"><a class="active" href="#">注册</a></li>
 </ul>
 <title>注册</title>
 <h1 align="center" style="font-family:Arial, Helvetica, sans-serif;font-size:40px;color:#069"> Registration </h1>
-<p align="center" style="font-mamily:微软雅黑;font-size:30px;color:#">欢迎来到注册界面！<br>
+<p  align="center" style="font:微软雅黑;font-size:30px">欢迎来到注册界面！<br>
   请填写您的完整信息以完成注册。</p>
 <br>
 <div style="margin:auto">
-  <form style="font-family:微软雅黑;color=#" id="freg">
+  <form style="font-family:微软雅黑" id="freg">
     <span style="color:white">1.用户名:</span>
     <input type="text" id="username"   name="username"/>
     <br>
@@ -81,7 +81,7 @@ li a:hover {
   </form>
 </div>
 <script>
-
+	//todo:添加自动检查用户名是否被占用的功能
 	is_psd_ok = false;
 	is_email_ok = false;
 	//这两个是全局变量（偷个懒）
@@ -92,13 +92,13 @@ $('#send').click(function()//点击注册时执行函数
 	if(!info_to_submit)//如果用户填写的信息不符合要求
 		return;
 	//下面调用后端接口
-	$.post('https://prj.knightdusk.cn/api/user/register.php',{username:info_to_submit.username,password:info_to_submit.username,email:info_to_submit.email},
+	$.post('https://prj.knightdusk.cn/api/user/register.php',info_to_submit,
 		   function(data){//回调函数，data为接口返回的json字符串自动解析为json对象
 
 				if(data.result == true)
 				{
 					alert("注册成功！");
-					window.location.href('task.html');
+					window.location.href('login.html');
 				}
 				else
 				{
@@ -141,8 +141,8 @@ function validateForm() //这个函数验证
 	   alert("电子邮件地址格式不合法");
        return false;
 	}
-	return {'username':name,'psd':password,'email':email};
-	//创建一个对象，稍后序列化为json对象
+	return {username:name,psd:psd,email:email};
+	
 }
 $('#password').blur(function(){//密码输入框失去焦点时，检查密码长度是否合法
 	var psd_legth = $('#password').val().length

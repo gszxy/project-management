@@ -17,7 +17,7 @@ $usr = new User();
 
 if($usr->get_is_login())
     $usr->logout();
-$login_result = $usr->login($_POST["username"], sha1($_POST["psd"]."a_magic_str__@#S8GT^Y&JHGA13"));
+$login_result = $usr->login($_POST["username"], sha1($_POST["psd"]."a_magic_str__@#S8GT^Y&JHGA13"),$_POST['is_to_remember']);
 
 $result = json_encode($login_result);
 //$result格式举例：return ["is_usr_exist"=>true,"is_psd_ok"=>false];

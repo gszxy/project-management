@@ -1,0 +1,111 @@
+@charset "utf-8";
+/* CSS Document */
+#icp {
+	background-color: rgba(246,228,202,0.6);
+}
+.common_label {
+	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+	font-size: 25px;
+}
+.center
+{
+margin-left:auto;
+margin-right:auto;
+}
+#div_no_info {
+	position:relative;
+	top:70px;
+	align-content: center;
+	color:darkred;
+	alignment-baseline: center;
+	vertical-align:center;
+	font:"楷体";
+	font-size: 20px;
+}
+#div_no_info_2{
+	font:"楷体";
+	font-size: 20px;
+	align-content: center;
+	color:darkred;
+}
+
+table.no-transparent {
+	height: auto;
+	width: 100%;
+	background-color: white;
+	opacity: 1;
+}
+
+.text_def {
+	font-size: 20px;
+}
+
+#query_input {
+	height: 125px;
+}
+.status_notice{
+	
+	font: "楷体";
+	font-size:15px;
+	color: dodgerblue;
+}
+.common_label {
+	font: "楷体";
+}
+.large_result_table{
+	border: medium,rgba(240,215,85,1.00);
+}
+
+#btn_announce {
+	margin-bottom: 10px;
+}
+
+.block-link {
+	background-color: transparent;
+	height: 100px;
+}
+
+.link-block-qmain {
+	background-color:aliceblue;
+	height: 100px;
+	border: solid;
+	font-size: 20px;
+	border-color: #1296DB;
+}
+
+.join_us_common_title {
+	font-family:"楷体";
+	font-size: 28px;
+  
+}
+
+.join_us_hr_common {
+	color: coral;
+	height: 100px;
+}
+
+.common_sunburst_container {
+	height: 300px;
+	width:300px;
+	padding: 30px;
+	border:dashed,rgba(161,224,255,1.00);
+}
+
+#TencentCaptcha {
+	background-color: darksalmon;
+}
+
+.link-block-qmain_2 {
+	background-color:beige;
+	height: 100px;
+	border: solid;
+	font-size: 20px;
+	border-color: #1296DB;
+}
+
+
+
+.result_info{
+	font-size: 20px;
+	padding-bottom: 10px;
+}

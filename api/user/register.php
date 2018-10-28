@@ -14,6 +14,7 @@ use Exception;
  * 添加$_POST参数未设置时的报错功能
  */
 header('Content-type:text/json');
+header('char-set:utf-8'); 
 
 $usr = new User();
 $is_register_successful = 'false';

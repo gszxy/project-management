@@ -2,9 +2,35 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>无标题文档</title>
+<title>登录测试页</title>
+<script src="JavaScript/out/jquery-1.11.3.min.js"></script>
 </head>
 
 <body>
+    <h3 id="login_info"></h3>
+    <h3 id="user_info"></h3>
+    <input type="button" value="退出登录" id="btn_logout">
+    <p><a href = "login.html">回到登录页面</a></p>
+    <script>
+    $('#btn_logout').attr('disabled','disabled');//无效化退出按钮。如成功登陆，则使之有效
+        $.get('../api/user/get_personal_info.php',{/*没有参数*/},function(data){
+            if(data.is_login)
+            {
+                $('#login_info').text ( '您已成功登录项目管理系统');
+                $('#user_info').text ( '您当前登陆的用户名是' + data.username);
+                $('#btn_logout').removeAttr('disabled');
+            }
+            else
+            {
+                $('#login_info').text ( "您还没有登录");
+            }
+        });
+    $('#btn_logout').click(function(){
+        $.post('/api/user/logout.php',{/*没有参数*/},function(data/*目前无用*/){
+            alert("成功退出登录");
+            location.reload();//刷新页面
+        });
+    });
+    </script>
 </body>
 </html>
