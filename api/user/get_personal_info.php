@@ -15,7 +15,7 @@ header("Access-Control-Allow-Origin: *");
 
 
 $usr = new User();
-
+$name = '';
 if(!$usr->get_is_login())
 {
     $is_login = false;

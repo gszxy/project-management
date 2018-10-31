@@ -12,8 +12,8 @@
 
 namespace WebsiteUser
 {
-    include __DIR__ . '/../basic/session_identify.php';
-    include __DIR__ . '/../mysql/sql_get_user_info.php';
+    include_once __DIR__ . '/../basic/session_identify.php';
+    include_once __DIR__ . '/../mysql/sql_get_user_info.php';
     use SessionProcess\SessionUser;
     use function SqlUsrDataFuncs\check_if_usrname_exist;
     use function SqlUsrDataFuncs\check_password;
@@ -25,10 +25,10 @@ namespace WebsiteUser
     class User
     {
         private $session;/*SessionUser*/
-        private $is_login;
-        private $name;
-        private $usr_id;
-        private $usr_privilege = 1; //用户获取任务信息的权限等级
+        protected $is_login;
+        protected $name;
+        protected $usr_id;
+        protected $usr_privilege = 1; //用户获取任务信息的权限等级
         public function __construct()
         {
             $this ->session = new SessionUser();
@@ -36,7 +36,7 @@ namespace WebsiteUser
             $this->is_login = $info['is_login'];
             $this->name = $info['name'];
             //$this->usr = $info['id'];
-            //$this->usr_privilege  = 
+            $this->usr_privilege  = 2;
         }
         public function login(string $usrname, string $psd_sha1,bool $is_to_remember = false) : array 
         {

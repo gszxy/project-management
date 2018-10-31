@@ -1,7 +1,7 @@
 <?php
 include '../../utility/user/user.php';
 use WebsiteUser\User;
-
+ob_start();
 /*
  * 前端接口：用户登录
  * 
@@ -10,10 +10,13 @@ use WebsiteUser\User;
  * 
  * 
  */
+$usr = new User();//构造函数涉及到cookie，一定要放在header之前
+//这个bug是意料之外的，确实导致了一定的公共环境耦合
+
 header('Content-type:text/json');
 header("Access-Control-Allow-Origin: *");
 
-$usr = new User();
+
 
 if($usr->get_is_login())
     $usr->logout();

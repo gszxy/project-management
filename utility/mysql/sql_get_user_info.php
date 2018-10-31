@@ -7,12 +7,13 @@
  */
 namespace SqlUsrDataFuncs
 {
-    include __DIR__ . '/../basic/db.php';
+    include_once __DIR__ . '/../basic/db.php';
     use DatabaseBasic;
     use Exception;
+
     //定义一些异常类……
-    class UserNotFoundException extends Exception {}
     class DBErrorException extends Exception {}
+    class UserNotFoundException extends Exception {}
     //
     function get_usr_info($usr_name) : array
     {
