@@ -35,6 +35,8 @@ namespace SqlUsrDataFuncs
     }
     function check_if_usrname_exist(string $name) : bool
     {
+        if($name == NULL)
+            return false;
         $con_obj = DatabaseBasic::get_connection_obj();
         $_name = $con_obj->real_escape_string($name);
         $find_psd_query = $con_obj -> prepare("SELECT psd_sha1 FROM users WHERE name = ? ");

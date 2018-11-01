@@ -103,9 +103,16 @@ namespace WebsiteUser
         }
         function add_task($title, $content,$hours_needed,bool $is_to_take = false,$sprint_id = 0)
         {//is_to_take:是否立即给自己领取任务
+         //sprint_id:今后将使用此变量区别任务批次。管理员可以更改全局sprint_id，使任务进入下一阶段
+         //          此功能尚待实现
             $this->assert_user_authorized($this->add_task_privilege_requirement);
             insert_task($title,$content,$hours_needed,
                         $is_to_take == true ? $this->name : NULL ,$sprint_id);
+        }
+        function get_team_statistics()
+        {//获取团队数据：1.团队已完成任务数、未完成任务数、未领取任务数；团队过去一个月每日的剩余任务小时数
+         //计算每天剩余小时数并存入数据库的任务由数据库存储过程在每天凌晨完成
+
         }
     }
 }

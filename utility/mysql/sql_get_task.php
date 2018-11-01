@@ -17,6 +17,7 @@ namespace SqlTskDataFuncs
     //定义一些异常类...
     class TskUserNotFoundException extends Exception {}
     class TskDBErrorException extends Exception {}
+    class TskFcnInvalidArgException extends Exception{}
     //...
     const __ByCreator = 1;
     const __ByOwner = 2;
@@ -27,12 +28,48 @@ namespace SqlTskDataFuncs
     const __Ongoing = 2;
     const __Finished= 3;
     
-    function get_task(int $type, $param ,int $limit_of_days_from_completion = -1) : array
+    function get_task(int $type, $param ,int $limit_of_days_from_completion = -1, int $max_num = -1) : array
     {//type 1:通过任务的创建者查找任务
      //type 2:通过任务的执行者查找任务
      //type 3:通过任务的全局唯一id查找任务
      //type 4:通过状态获取任务，1->未领取  2->进行中  3->已完成
      //第三个参数限制完成天数，避免任务列表上显示过多已完成任务。未完成任务不受此参数影响。
+     $str_query;
+     $pattern;
+     $limit_pattern = '';
+     if($limit_of_days_from_completion != -1)
+     {
+        $limit_pattern = "AND DATEDIFF(CURDATE() , date(`add_date`) ) < $limit_of_days_from_completion";
+        if($max_num == -1)
+            $limit_pattern = "LIMIT $max_num";
+     }
+     switch($type)
+     {
+     case __ByCreator:
+        $str_query = 'SELECT * FROM tasks WHERE creator = ?'. $limit_pattern;
+        $pattern = "s";
+     break;
+     case __ByOwner:
+        $str_query = 'SELECT * FROM tasks WHERE `owner` = ?'. $limit_pattern;
+        $pattern = "s";
+     break;
+     case __ByUniqueId:
+        $str_query = 'SELECT * FROM tasks WHERE id = ?'. $limit_pattern;
+        $pattern = "i";
+     break;
+     case __ByStatus:
+        $str_query = 'SELECT * FROM tasks WHERE `status` = ?'. $limit_pattern;
+        $pattern = "i";
+     break;
+     }
+     $con = DatabaseBasic::get_connection_obj();
+     $query = $con->prepare($str_query);
+     $query->bind_param($pattern,$param);
+     if($query == false)
+        throw new DBErrorException($con->error);
+     $is_successful = $query -> execute();
+     if(!$is_successful)
+        throw new DBErrorException($con->error);
     }
     function insert_task($title,$content ,$creator,$hours_needed,$owner = NULL,$sprint_id = 0)
     {
@@ -62,7 +99,16 @@ namespace SqlTskDataFuncs
     }
     function set_task_status($task_id,$status,$content = NULL)
     {//content:将任务状态设置为进行中时，提供执行任务的用户的用户名
-
+        if($status = __Ongoing && (! SqlUsrDataFuncs\check_if_usrname_exist($name)))
+            throw new TskFcnInvalidArgException("user to work on the task required");
+        $con = DatabaseBasic::get_connection_obj();
+        $query = $con->prepare("UPDATE tasks SET `status` = ? WHERE id = ?");
+        $query->bind_param("ii",$status,$task_id);
+        if($query == false)
+            throw new DBErrorException($con->error);
+        $is_successful = $query -> execute();
+        if(!$is_successful)
+            throw new DBErrorException($con->error);
     }
     function progress_task($task_id,$hours_gone)//增加一个任务已经完成的时间
     {
@@ -86,4 +132,6 @@ namespace SqlTskDataFuncs
 
 
 }
+
+
 
