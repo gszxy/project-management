@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /*
  * 本文件为数据库连接基础文件。
@@ -14,12 +14,13 @@
  *            10月13日 修改结构
  *            10月19日测试、修正
  */
+
 class DatabaseBasic
 {
     private static $address = '127.0.0.1';
-    private static $username = '';
-    private static $password = '';
-    private static $dbname = '';
+    private static $username = 'project_manage';
+    private static $password = 'qQI5id5efVQYudHU';
+    private static $dbname = 'project_manage';
     
     private static $status = 0;//状态： 1->已连接 0->未连接 -1->出错
     private static $connection;

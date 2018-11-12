@@ -11,6 +11,12 @@
     <h3 id="user_info"></h3>
     <input type="button" value="退出登录" id="btn_logout">
     <p><a href = "login.html">回到登录页面</a></p>
+
+    <div id="task">
+        <div id="untaken"></div>
+        <div id="ongoing"></div>
+        <div id="finished"></div>
+    </div>
     <script>
     $('#btn_logout').attr('disabled','disabled');//无效化退出按钮。如成功登陆，则使之有效
         $.get('../api/user/get_personal_info.php',{/*没有参数*/},function(data){
@@ -29,6 +35,21 @@
         $.post('/api/user/logout.php',{/*没有参数*/},function(data/*目前无用*/){
             alert("成功退出登录");
             location.reload();//刷新页面
+        });
+    });
+    $( document ).ready(function() {
+        $.get('../api/task/get_task.php',{type:'team'},function(data){
+            $('#ongoing').append('<p>正在进行的任务</p><br>');
+            var count = 0;
+            data.result.ongoing.forEach(task => {
+                $('#ongoing').append('<p id=\"ongoing' + count + '\"></p><br>');
+                var task_text = '创建者：' + task.creator;
+                task_text += '  任务标题：'+ task.title;
+                task_text += '  任务执行者：'+ task.owner;
+                task_text += '  剩余小时数：'+ task.hours_needed - task.hours_gone;
+                $('#ongoing' + count ).text ( task_text);
+                ++count;
+            });
         });
     });
     </script>

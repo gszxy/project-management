@@ -5,8 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>登录项目管理</title>
 <meta charset="UTF-8">
-<link href="/page/css/out/bootstrap.css" rel="stylesheet" type="text/css">
-<script src="JavaScript/out/jquery-1.11.3.min.js"></script>
+<!-- <link href="/page/css/out/bootstrap.css" rel="stylesheet" type="text/css"> -->
+<link href="/asset/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="/asset/flatui/css/flat-ui.min.css" rel="stylesheet" type="text/css">
+<script src="/page/JavaScript/out/jquery-1.11.3.min.js"></script>
+<script src="/asset/bootstrap/js/bootstrap.min.js"></script>
+<script src="/asset/flatui/scripts/flat-ui.min.js"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -14,15 +18,28 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 <style>
-div {
-	background-color: lightgrey;
+ 
+.block {
+
 	width: 300px;
-	margin: 25px;
+	margin:0px auto;
 	border: 1px solid #a1a1a1;
-	padding: 20px 10px 10px 60px;
-	background: #69C;
-	border-radius: 25px;
+	padding: 10px 35px 10px 30px;
+	background: rgba(102,153,204,0.9);
+	border-radius: 0px; /*由张笑语删除圆角*/
+	background-blend-mode: luminosity;
+	
+
 }
+
+	.control-label{
+		font-size:15px;
+	}
+	h2{
+		font-family:Arial, Helvetica, sans-serif;
+		font-size:40px;
+text-align: center;
+	}
 ul {
 	list-style-type: none;
 	margin: 0;
@@ -46,7 +63,18 @@ li a {
 li a:hover {
 	background-color: #069;
 }
+.jumbotron {
+	margin-top: 75px;
+	margin-bottom: 0px;
+	background-image: url(/asset/pic/login_page_pic.jpg);
+	background-position: 0% 25%;
+	background-size: cover;
+	background-repeat: no-repeat;
+	color: black;
+	height: 500px;
+}
 </style>
+<title>登录</title>
 </head>
 <body>
 <ul class="navbar">
@@ -56,29 +84,36 @@ li a:hover {
   <li style="float:right"><a class="active" href="login.html">登录</a></li>
   <li style="float:right"><a class="active" href="register.html">注册</a></li>
 </ul>
-<title>登录</title>
-<h1 align="center" style="font-family:Arial, Helvetica, sans-serif;font-size:40px;color:#069"> 登录</h1>
-<p align="center" style="font:微软雅黑;font-size:30px;">请填写您的账户信息以登录。</p>
+<div class="jumbotron" >
+  <div class="container" >
+	 <div style="float: right">
+    <h2>登录项目管理</h2>
+    <div class="block">
+      <form style="font:微软雅黑;margin:0px auto">
+        <label for="username" class="control-label">账号:</label>
+        <input class="form-control" type="text" id="username" />
+
+        <label for="password" class="control-label">密码:</label>
+        <input  class="form-control" type="password" id="password" />
 <br>
-<div style="margin:auto">
-  <form style="font:微软雅黑">
-	<span style="color:white">账号:</span>
-    <input type="text" id="username" />
-    <br>
-    <br>
-    <span style="color:white">密码:</span>
-    <input type="password" id="password" />
-    <br>
-	<br>
-	<input type="checkbox" id="remember">
-	<span style="color:white">记住登录状态</span>
-	<br>
-	<br>
-    <input type="button" value="登 录" class="button" id="btn_login" style="margin:0px 40px;padding:5px 16px"/>
-    &nbsp;&nbsp;
-    <input type="button" value="注 册" class="button" id="btn_register" style="margin:0px -30px;padding:5px 16px" />
-  </form>
+		  <label for="rem" class="control-label">记住登录状态:</label>
+		  <div class="bootstrap-switch-square" style="display: inline-block;height:10px">
+   <input type="checkbox" data-on-color="info" data-toggle="switch" name="rem" id="s1" />
+		  </div>
+
+
+
+
+        <input type="button" value="登 录" class="btn btn-primary" id="btn_login" style="margin:15px 40px;padding:5px 16px"/>
+        &nbsp;&nbsp;
+        <input type="button" value="注 册" class="btn btn-info" id="btn_register" style="margin:15px -30px;padding:5px 16px" />
+      </form>
+    </div>
+		 </div>
+  </div>
 </div>
+
+
 
 <script>
 	$('#btn_register').click(function(){window.location.href='register.html'});
@@ -88,7 +123,7 @@ li a:hover {
 	$('#btn_login').click(function(){
 		var username = $('#username').val();
 		var password = $('#password').val();
-		var is_to_remember = $('#remember').attr('checked');
+		var is_to_remember = document.getElementsByName('rem')[0].checked;
 		if(username == '' || password == '')
 		{
 			alert("请填写用户名和密码");
@@ -108,10 +143,13 @@ li a:hover {
 			}
 			else
 			{
-				window.location.href('task.html');
+				window.location.href('main.html');
 			}
 		});
 	});
+$('#s1').bootstrapSwitch('onText', '是');
+$('#s1').bootstrapSwitch('offText', '否');
+
 </script>
 </body>
 </html>

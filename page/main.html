@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>项目管理主页</title>
+<meta charset="UTF-8">
+<link href="/page/css/out/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="/page/css/common.css" rel="stylesheet" type="text/css">
+<link href="/page/css/out/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+<script src="/page/JavaScript/out/jquery-1.11.3.min.js"></script>
+<script src="/page/JavaScript/out/bootstrap.js"></script>
+<script type="text/javascript" src="/page/JavaScript/out/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/page/JavaScript/out/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+<style>
+.block {
+	background-color: lightgrey;
+	width: 200px;
+	margin: 85px;
+	border: 4px solid #a1a1a1;
+	padding: 5px 5px 5px 5px;
+	background: #CC9900;
+	border-radius: 5px;
+}
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #69C;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+li {
+	float: left;
+}
+li a {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+}
+	span.task{
+		display: block;
+	}
+.STYLE2 {
+	font-size: 18px
+}
+.STYLE3 {
+	font-size: 24px;
+	font-weight: bold;
+}
+.well
+{
+		display:inline-block;
+	width:90%
+}
+.t-delete /*删除任务那几个字是红色的*/
+	{
+		color: crimson;
+	}
+.t-title
+	{
+		font-weight: bold;
+	}
+	.btn-sm{
+		margin-top: 7px;
+	}
+</style>
+</head>
+<body>
+<ul>
+  <li><a href="" class="active"><strong>主页</strong> </a></li>
+  <li><a href="">用户</a></li>
+  <li><a href="">任务</a></li>
+  <li><a href="">项目进度</a></li>
+  <li><a href="">业绩</a></li>
+  <li hidden="hidden"><a href="">管理</a></li>
+  <!--仅对管理员可见。通过javascript取消隐藏-->
+  
+  <li style="float:right" id="btn_logout"><a><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>退出</a></li>
+  <li style="float:right" ><a id="txt_username"></a></li>
+</ul>
+<br>
+<div class="container">
+  <div class="alert alert-warning" role="alert"><b>提示：</b>您正在浏览的是项目管理页面-开发版</div>
+  <div class="page-header">
+    <h1>主页——项目管理 <small>这里是还没有编好的副标题。。</small></h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-1"></div>
+  <div class="col-lg-2"></div>
+  <div class="col-lg-3" id="mission_created_list">
+	<h3>我创建的任务</h3>
+  </div><!--end of column-->
+  <div class="col-lg-3" id="mission_owned_list">
+	<h3>我负责的任务</h3>
+  </div><!--end of column-->
+  <div class="col-lg-2">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">快速操作</h3>
+      </div>
+      <div class="panel-body"> 
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"> 添加新任务 </button>
+		<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#report"> 撰写任务报告 </button>
+		<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#report"> 任务评价打分 </button>
+      </div>
+      <div class="panel-footer">Panel footer</div>
+    </div>
+  </div>
+  <!--end of column-->
+  <div class="col-lg-1"></div>
+</div>
+
+<!--add quest modal-->
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">添加新任务</h4>
+      </div>
+      <div class="modal-body">
+        <form id="add_task_form">
+          <div class="form-group">
+            <label for="title-name" class="control-label" >任务标题:</label>
+            <input type="text" class="form-control" name="title" id="title-name" placeholder="任务标题，15个汉字以内，必填。">
+            <label for="content-text" class="control-label"  >任务正文:</label>
+            <textarea class="form-control" name="content" id="content-text" placeholder="在此处输入任务的详细描述。必填（以后会改）。"></textarea>
+            <br>
+            <div class="input-group" style="position: relative; z-index: 9999;"> <span class="input-group-addon">
+              <label for="dtp_input2" class="control-label">预计完成日期</label>
+              </span>
+              <div class="input-group date form_date" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+                <input class="form-control" id="close_date" size="16" type="text" value="" readonly>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span> <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span> </div>
+            </div>
+            <br>
+            <div class="input-group"> <span class="input-group-addon">
+              <label for="checkget">立即指派任务</label>
+              <input type="checkbox" id="checkget" name="is_to_take" aria-label="...">
+              </span>
+              <input type="text" class="form-control" id="add_tsk_owner" aria-label="..." placeholder="此输入框暂时无效。勿填，否则选项失效。">
+            </div>
+            <br>
+            <div class="input-group"> <span class="input-group-addon">
+              <label for="number_hours_needed" >预期时间</label>
+              </span>
+              <input type="number"  class="form-control" id="number_hours_needed" aria-label="..." placeholder="预计任务需要的小时数...输入文本会出错，以后会改">
+            </div>
+            <br>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id="btn_create_task">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+	
+<script type="text/javascript" src="/page/JavaScript/tsk_prs.js" charset="UTF-8"></script>
+<script>
+//加载全部任务
+$(document).ready(function(){
+	$.get("../api/task/get_task.php",{type:"personal"},function(tskdata){
+		var created = tskdata.result.task_created;
+		var owned = tskdata.result.task_owned;
+
+		clist = new List($('#mission_created_list'),created);
+		clist.ShowAllTasks();
+		olist = new List($('#mission_owned_list'),owned);
+		olist.ShowAllTasks();
+	});
+});
+	
+	
+$.get('../api/user/get_personal_info.php',{/*没有参数*/},function(data){
+  if(data.is_login)
+  {
+    $('#txt_username').text (data.username);
+  }
+  else
+  {
+    window.location.href('login.html');
+  }
+});
+    $('#btn_logout').click(function(){
+        $.post('/api/user/logout.php',{/*没有参数*/},function(data/*目前无用*/){
+            alert("成功退出登录");
+            window.location.href('login.html');
+        });
+    });
+	
+	
+//一下代码的功能是激活日期选择器
+
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		forceParse: 0,
+        showMeridian: 1,
+		format: 'yyyy-mm-dd hh:ii'
+    });
+	$('.form_date').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0,
+		format: 'yyyy-mm-dd'
+    });
+	$('.form_time').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 1,
+		minView: 0,
+		maxView: 1,
+		forceParse: 0,
+		format: 'hh:ii'
+    });
+
+	
+	//创建任务的功能。现在先暴力一点，创建完了直接刷新页面显示新任务
+	//以后会对这个功能做出修改，使用js列表对象的方法实时添加而不是刷新页面
+	$('#btn_create_task').click(function(){
+		$('#btn_create_task').attr('disabled','disabled');
+		//立即无效化按钮，防止用户不耐心反复点击按钮导致重复提交
+		//以后采用js实时添加任务的时候不要忘记使按钮重新有效
+		
+		$.post('/api/task/add_task.php',{title:$("#title-name").val(),
+										 content:$("#content-text").text(),
+										 hours_needed:$("#number_hours_needed").val(),
+										 owner:$("#add_tsk_owner").val(),
+										 is_to_take:$("#checkget").is(':checked'),
+										 close_date:$("#close_date").val(),
+										},function(data){
+                      alert(data);
+      //window.location.reload();//刷新任务
+    });
+	});
+
+	
+</script>
+</body>
+</html>

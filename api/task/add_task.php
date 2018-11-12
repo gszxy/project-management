@@ -10,13 +10,13 @@
 
  include '../../utility/user/taskuser.php';
  use WebsiteUser\TaskUser;
+ $task_user = new TaskUser();
  header('Content-type:text/json');
  header("Access-Control-Allow-Origin: *");
- $task_user = new TaskUser();
  $is_ok = false;
  $msg = '';
 
- if(!(isset($_POST['title'])&&isset($_POST['content'])&&isset($_POST['hours_needed'])&&isset($_POST['is_to_take'])))
+ if(!(isset($_POST['title'])&&isset($_POST['content'])&&isset($_POST['hours_needed'])&&isset($_POST['is_to_take'])&&isset($_POST['close_date'])))
  {
     http_response_code(400);
     $msg = 'illegal parameters';
@@ -25,7 +25,8 @@
  {
  try
  {
-     $task_user->add_task($_POST['title'],$_POST['content'],$_POST['hours_needed'],$_POST['is_to_take']);
+
+     $task_user->add_task($_POST['title'],$_POST['content'],$_POST['hours_needed'],$_POST['close_date'],$_POST['is_to_take'] == 'true');
      $is_ok = true;
  }
  catch (WebsiteUser\FcnParamIllegalException $exp)
@@ -41,7 +42,7 @@
  catch (Exception $exp)
  {
     http_response_code(500); //HTTP 500错误：服务器内部错误。 遇此错误请报告bug
-    $msg = "UNHANDLED EXCEPTION".$exp->getMessage();
+    $msg = "UNHANDLED EXCEPTION:".$exp->getMessage();
  }
  
 }

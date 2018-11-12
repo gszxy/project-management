@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 
 /*此类负责总处理网站会话变量和cookie
@@ -10,12 +10,13 @@
  *
  * --------------------------------------------------------------
  * 张笑语  2018年10月9日   新添加
+ *        2018年10月28日  测试完毕
  */
 namespace SessionProcess
 {
     class SessionUser
     {
-        private static $magic_str = "";
+        private static $magic_str = "e32dcf$^fgw2QW@!@SVAS";
         //这个字符串的值对系统安全很重要，不得泄露。
         //用于生成验证保存登录状态的session变量和cookie。
         //修改此字符串使得网站所有用户保存的登录状态失效

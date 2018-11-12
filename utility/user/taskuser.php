@@ -16,6 +16,14 @@ namespace WebsiteUser
     use function SqlUsrDataFuncs\check_if_usrname_exist;
     use function SqlTskDataFuncs\get_task;
     use function SqlTskDataFuncs\insert_task;
+    const __ByCreator = 1;
+    const __ByOwner = 2;
+    const __ByUniqueId = 3;
+    const __ByStatus = 4;
+    
+    const __Untaken = 1;
+    const __Ongoing = 2;
+    const __Finished= 3;
     //首先定义一些异常类……
     use Exception;
     class TaskUserNotAuthorizedException extends Exception{}
@@ -24,13 +32,14 @@ namespace WebsiteUser
     //
     class TaskUser extends User
     {
-        //用户人物类
+        //用户任务类
 
         private $add_task_privilege_requirement = 1;
         private $distribute_task_privilege_requirement = 2;
         private $delete_self_created_task_privilege_requirement = 1;
         private $delete_any_task_privilege_requirement = 2;
         private $rank_task_privilege_requirement = 2;
+        private $sprint_id = 1;
         public function __construct()
         {//构造函数的任务：获取用户权限等级
             parent::__construct();
@@ -41,7 +50,7 @@ namespace WebsiteUser
         private function assert_is_usr_logged_in()
         {
             if(!$this->is_login)
-                throw new TaskUserNotLoginedException("Tried to load tasks for a user which has not logged in");
+                throw new TaskUserNotLoggedInException("Tried to load tasks for a user which has not logged in");
         }
         private function assert_user_authorized(int $privilege_requirement)
         {
@@ -55,18 +64,24 @@ namespace WebsiteUser
             $task_usr_created = get_task(__ByCreator,$this->name);//数组，该用户创建的任务
             return ["task_owned"=>$task_usr_owned,"task_created"=>$task_usr_created];
         }
-        public function get_team_untaken_task()
-        {
+        public function get_team_untaken_task($sprint_id = 0)
+        {//0:当前团队正在进行的sprint，即默认值。下同。
+            if($sprint_id == 0)
+                $sprint_id = $this->sprint_id;
             $this->assert_is_usr_logged_in();
-            
+            return get_task(__ByStatus,__Untaken);
         }
-        public function get_team_ongoing_task()
+        public function get_team_ongoing_task($sprint_id = 0)
         {
-            
+            if($sprint_id == 0)
+                $sprint_id = $this->sprint_id;
+            return get_task(__ByStatus,__Ongoing);
         }
-        public function get_team_finished_task(int $limit_of_days_from_completion)
+        public function get_team_finished_task(int $limit_of_days_from_completion,$sprint_id = 0)
         {
-
+            if($sprint_id == 0)
+                $sprint_id = $this->sprint_id;
+            return get_task(__ByStatus,__Finished,$limit_of_days_from_completion);
         }
         //actions.....
         public function operate_task(string $operation,int $task_id, $content )
@@ -101,13 +116,20 @@ namespace WebsiteUser
                 break;
             }
         }
-        function add_task($title, $content,$hours_needed,bool $is_to_take = false,$sprint_id = 0)
+        function add_task($title, $content,$hours_needed,$close_date,$is_to_take,$sprint_id = 0)
         {//is_to_take:是否立即给自己领取任务
          //sprint_id:今后将使用此变量区别任务批次。管理员可以更改全局sprint_id，使任务进入下一阶段
          //          此功能尚待实现
+
             $this->assert_user_authorized($this->add_task_privilege_requirement);
-            insert_task($title,$content,$hours_needed,
-                        $is_to_take == true ? $this->name : NULL ,$sprint_id);
+
+            if ($is_to_take) {
+                insert_task($title,$content,$this->name, $hours_needed,$close_date,2,$this->name);
+            }
+            else
+            {         
+                insert_task($title,$content,$this->name, $hours_needed,$close_date,1);
+            }
         }
         function get_team_statistics()
         {//获取团队数据：1.团队已完成任务数、未完成任务数、未领取任务数；团队过去一个月每日的剩余任务小时数
