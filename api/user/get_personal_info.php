@@ -23,6 +23,6 @@ if(!$usr->get_is_login())
 else
 {
     $is_login = true;
-    $name = $usr->get_user_info()["username"];
+    $name = $usr->get_user_info()["name"];
 }
 echo json_encode(['is_login'=>$is_login,'username'=>$name]);

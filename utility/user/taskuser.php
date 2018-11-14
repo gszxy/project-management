@@ -12,10 +12,12 @@ namespace WebsiteUser
     include_once __DIR__.'/user.php';
     include_once __DIR__.'/../mysql/sql_get_task.php';
     include_once __DIR__.'/../mysql/sql_get_user_info.php';
+    include_once __DIR__.'/../mysql/sql_task_rank.php';
     use SqlTskDataFuncs;
     use function SqlUsrDataFuncs\check_if_usrname_exist;
     use function SqlTskDataFuncs\get_task;
     use function SqlTskDataFuncs\insert_task;
+    use function SqlTskDataFuncs\set_task_status;
     const __ByCreator = 1;
     const __ByOwner = 2;
     const __ByUniqueId = 3;
@@ -37,8 +39,8 @@ namespace WebsiteUser
         private $add_task_privilege_requirement = 1;
         private $distribute_task_privilege_requirement = 2;
         private $delete_self_created_task_privilege_requirement = 1;
-        private $delete_any_task_privilege_requirement = 2;
-        private $rank_task_privilege_requirement = 2;
+        private $delete_any_task_privilege_requirement = 1;
+        private $rank_task_privilege_requirement = 1;
         private $sprint_id = 1;
         public function __construct()
         {//构造函数的任务：获取用户权限等级
@@ -84,15 +86,20 @@ namespace WebsiteUser
             return get_task(__ByStatus,__Finished,$limit_of_days_from_completion);
         }
         //actions.....
-        public function operate_task(string $operation,int $task_id, $content )
+        public function operate_task(string $operation,int $task_id, $content = null )
         {
             switch($operation)
             {
                 case 'take':
                     //content要求：NULL
+                    if(get_task(__ByUniqueId,$task_id)['status'] != __Untaken)//显然，只能领取未领取任务
+                        throw new FcnParamIllegalException("Tried to take a task which has alredy been taken");
                     set_task_status($task_id,2/*ongoing*/,$this->name);
                 break;
                 case 'finish':
+                    if(get_task(__ByUniqueId,$task_id)['owner'] != $this->name)//显然，只能完成自己负责的任务
+                        throw new TaskUserNotAuthorizedException("Tried to finish a task for other users");
+                        //毫不留情地抛出异常，因为前端应该也必须检查这个逻辑
                     set_task_status($task_id,3/*finished*/);
                 break;
                 case 'report':
@@ -104,7 +111,7 @@ namespace WebsiteUser
                         $this->assert_user_authorized($this->delete_self_created_task_privilege_requirement);
                     else
                         $this->assert_user_authorized($this->delete_any_task_privilege_requirement);
-                    invalidate_task($task_id);
+                    SqlTskDataFuncs\invalidate_task($task_id);
                 break;
                 case 'distribute':
                     $this->assert_user_authorized($this->distribute_task_privilege_requirement);
@@ -135,6 +142,20 @@ namespace WebsiteUser
         {//获取团队数据：1.团队已完成任务数、未完成任务数、未领取任务数；团队过去一个月每日的剩余任务小时数
          //计算每天剩余小时数并存入数据库的任务由数据库存储过程在每天凌晨完成
 
+        }
+        function get_task_rank()
+        {
+            
+        }
+        function rank_task(int $task_id,int $score)
+        {
+            assert_user_authorized($rank_task_privilege_requirement);
+            $tsk = get_task(__ByUniqueId,$task_id);
+            if( !$tsk )//如果返回数组为空，即找不到这个任务，或者任务没有完成
+                throw new FcnParamIllegalException('Task to rank does not exist');
+            else if($tsk['status']!=3)
+                throw new FcnParamIllegalException('Task to rank has not finished yet.');
+            SqlTskRankFuncs\RankTask($task_id,$this->name,$score);
         }
     }
 }

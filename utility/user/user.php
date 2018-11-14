@@ -18,6 +18,7 @@ namespace WebsiteUser
     use function SqlUsrDataFuncs\check_if_usrname_exist;
     use function SqlUsrDataFuncs\check_password;
     use function SqlUsrDataFuncs\add_usr;
+    use function SqlUsrDataFuncs\get_usr_info;
     use Exception;
     //定义一些异常类
     class UsernameOccupiedException extends Exception{}
@@ -53,13 +54,14 @@ namespace WebsiteUser
         public function register(string $usrname, string $psd_sha1, string $email) : void
         {
             if(check_if_usrname_exist($usrname))
-                throw new UsernameOccupiedException;
+                throw new UsernameOccupiedException();
             add_usr($usrname, $psd_sha1, $email);
         }
         public function get_user_info()
         {
             //todo:进一步返回用户权限等级
-            return ["username"=>$this->name/*,"id"=>$this->usr_id*/];
+            return get_usr_info($this->name);
+
         }
         public function logout()
         {

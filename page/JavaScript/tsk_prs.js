@@ -4,31 +4,11 @@
 g_usr_privilege = 2;
 //
 class Task {
-    constructor(_content /*包含任务信息的json对象*/, callback,_node/*jquery选择器对象*/) {
+    constructor(_content /*包含任务信息的json对象*/, list/*此参数暂时废弃 */,_node/*jquery选择器对象*/) {
         this.content = _content;
-        this.callbackfunc = callback;
+        this.list_of_task = list;
         this.node = _node;
-        //回调函数必须接受两个参数，第一个是jquery节点对象，发出事件的任务所在的node。第二个是任务类型[1:任务被删除]
-        this.take = function () {
-            $.post('/api/task/operate_task.php',{type:'take',task_id:this.content.id},function(){
-                alert('成功领取任务');
-                window.location.reload();//刷新页面。之后回调做好了
-            });
-        };
-        this.progress = function (time_hours) {
-
-        };
-        this.finish = function () {
-
-        };
-        this.delete = function () {
-            $.post('/api/task/operate_task.php',{type:'delete',task_id:this.content.id},function(){
-                alert('成功删除任务');
-                window.location.reload();//刷新页面。之后回调做好了会改
-            });
-        };
-        this.detail = function () {//弹对话框显示细节，包括任务报告
-        };
+        
         this.show = function () {
 
             this.node.append('<div class="task t-title">' + this.content.title + '</div>');
@@ -80,6 +60,7 @@ class Task {
 
         };
     }
+    
 }
 
 
@@ -91,43 +72,104 @@ class List {
         this.tasks = new Array();
         _content.forEach(tsk => { //创建所有任务对象
             _node.append('<div class="well well-task well-lg" task_id="'+tsk.id+'"></div>');
-            this.tasks[tsk.id] =  new Task(tsk,null,_node.children(":last"));
+            this.tasks[tsk.id] =  new Task(tsk,this,_node.children(":last"));
+            var operation_block = _node.children(":last").children('.op');
+
         });
+        this.tasks.sort((a,b) => {
+            return a.content.id > b.content.id;
+        })
         this.ShowAllTasks = function()//展示所有任务
         {
             this.tasks.forEach(function(tsk) {
                 
                 tsk.show(_node.children('.well-task'));
+
             });
         };
+
+    }
+    TryRemoveTaskFromList(task_id)
+    {
+
+    }
+}
+        /*
         _node.click(function(){
             var target = $(event.target);
-            var type = $(event.target).attr('class');
+            var optype = target.text;
+            //这里使用了一个非常愚蠢的办法，就是用text来辨识操作类型
+            //但是不知道为什么，其它的属性，比如class,id都无法从这里获得
+            //只好出此下策
             if(target.parent.attr('class') != 'op')
                 return;//如果不是点击操作任务的标签，则不返回任何值
             var task_id = target.parent.parent.attr('task_id');
-            switch(type)
+            switch(optype)
             {
-            case 'delete':
+            case '删除任务':
                 this.tasks[task_id].delete();
             break;
-            case 'take':
+            case 't-take':
                 this.tasks[task_id].take();
             break;
-            case 'progress':
+            case 't-progress':
+                this.tasks[task_id].progress();
             break;
-            case 'finish':
+            case 't-finish':
+                this.tasks[task_id].finish();
             break;
-            case 'detail':
+            case 't-detail':
+                this.tasks[task_id].detail();
             break;
             default:
                 alert("Unrecognized Operation Type");
             }
-        })
-        this.DeleteATask()
-        {
+        });
+*/
+     //首先定义操作。。。
 
-        }
-    };
+    //++++++++++++++++++++++++++++++=
+function OperateTask(type,task_id,success_callback) {
+    $.post('/api/task/operate_task.php',{type:type,task_id:task_id},function(){
+        //此处添加操作任务后所有共性的操作
 
+        //下面调用由每个操作提供的回调
+        success_callback();
+    });
 }
+function BindAllTaskMethods ()
+{
+
+
+    $('.t-delete').click(function(){
+        var id = $(this).parents(".well-task").attr('task_id');
+        OperateTask('delete',id,function(){
+            alert("成功删除任务");
+            window.location.reload();
+        }); 
+    });
+    $('.t-take').click(function(){
+        var id = $(this).parents(".well-task").attr('task_id');
+        OperateTask('take',id, function(){
+            alert("成功领取任务");
+            window.location.reload();
+        }); 
+    });
+    $('.t-progress').click(function(){
+        var id = $(this).parents(".well-task").attr('task_id');
+        OperateTask('progress',id); 
+    });
+    $('.t-finish').click(function(){//请优先测试完成任务的功能
+        var id = $(this).parents(".well-task").attr('task_id');
+        OperateTask('finish',id,function(){
+            alert("已经将任务标记为完成");
+            window.location.reload();
+        }); 
+    });
+    $('.t-delete').click(function(){
+        var id = $(this).parents(".well-task").attr('task_id');
+        OperateTask('delete',id); 
+	});
+}
+
+

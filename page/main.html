@@ -91,9 +91,9 @@ li a {
 </ul>
 <br>
 <div class="container">
-  <div class="alert alert-warning" role="alert"><b>提示：</b>您正在浏览的是项目管理页面-开发版</div>
+  <div class="alert alert-warning" role="alert"><b>提示：</b>您正在浏览的是项目管理页面-开发版。下方任务列表分页功能暂时无效。</div>
   <div class="page-header">
-    <h1>主页——项目管理 <small>这里是还没有编好的副标题。。</small></h1>
+    <h1>主页——项目管理 <small>默认排序：新创建的任务在前</small></h1>
   </div>
 </div>
 <div class="row">
@@ -101,9 +101,52 @@ li a {
   <div class="col-lg-2"></div>
   <div class="col-lg-3" id="mission_created_list">
 	<h3>我创建的任务</h3>
+	  <!--下面是容纳已创建任务的列表 -->
+	  <nav aria-label="Page navigation">
+  <ul class="pagination">
+    <li>
+      <a href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li>
+      <a href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+	  <!-- 结束 -->
   </div><!--end of column-->
   <div class="col-lg-3" id="mission_owned_list">
+	  
 	<h3>我负责的任务</h3>
+	  
+	  <nav aria-label="Page navigation">
+  <ul class="pagination">
+    <li>
+      <a href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li>
+      <a href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+	  
   </div><!--end of column-->
   <div class="col-lg-2">
     <div class="panel panel-default">
@@ -143,7 +186,7 @@ li a {
             <div class="input-group" style="position: relative; z-index: 9999;"> <span class="input-group-addon">
               <label for="dtp_input2" class="control-label">预计完成日期</label>
               </span>
-              <div class="input-group date form_date" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+              <div class="input-group date form_date" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd" id="datetimepicker">
                 <input class="form-control" id="close_date" size="16" type="text" value="" readonly>
                 <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span> <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span> </div>
             </div>
@@ -185,15 +228,22 @@ $(document).ready(function(){
 		clist = new List($('#mission_created_list'),created);
 		clist.ShowAllTasks();
 		olist = new List($('#mission_owned_list'),owned);
-		olist.ShowAllTasks();
+    olist.ShowAllTasks();
+    BindAllTaskMethods();
+
+    
+	
 	});
-});
+
+
+
 	
 	
 $.get('../api/user/get_personal_info.php',{/*没有参数*/},function(data){
   if(data.is_login)
   {
     $('#txt_username').text (data.username);
+	$('#txt_username').attr('href','usrpage.php'); //个人资料页导航
   }
   else
   {
@@ -205,26 +255,21 @@ $.get('../api/user/get_personal_info.php',{/*没有参数*/},function(data){
             alert("成功退出登录");
             window.location.href('login.html');
         });
-    });
-	
-	
-//一下代码的功能是激活日期选择器
 
-    $('.form_datetime').datetimepicker({
-        language:  'zh-CN',
-        weekStart: 1,
-        todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2,
-		forceParse: 0,
-        showMeridian: 1,
-		format: 'yyyy-mm-dd hh:ii'
-    });
-	$('.form_date').datetimepicker({
-        language:  'zh-CN',
-        weekStart: 1,
-        todayBtn:  1,
+	
+	
+
+	
+	//创建任务的功能。现在先暴力一点，创建完了直接刷新页面显示新任务
+	//以后会对这个功能做出修改，使用js列表对象的方法实时添加而不是刷新页面
+
+});
+ 
+});
+$('.form_date').datetimepicker({
+    language:  'zh-CN',
+    weekStart: 1,
+      todayBtn:  1,
 		autoclose: 1,
 		todayHighlight: 1,
 		startView: 2,
@@ -232,22 +277,7 @@ $.get('../api/user/get_personal_info.php',{/*没有参数*/},function(data){
 		forceParse: 0,
 		format: 'yyyy-mm-dd'
     });
-	$('.form_time').datetimepicker({
-        language:  'zh-CN',
-        weekStart: 1,
-        todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 1,
-		minView: 0,
-		maxView: 1,
-		forceParse: 0,
-		format: 'hh:ii'
-    });
 
-	
-	//创建任务的功能。现在先暴力一点，创建完了直接刷新页面显示新任务
-	//以后会对这个功能做出修改，使用js列表对象的方法实时添加而不是刷新页面
 	$('#btn_create_task').click(function(){
 		$('#btn_create_task').attr('disabled','disabled');
 		//立即无效化按钮，防止用户不耐心反复点击按钮导致重复提交
@@ -260,12 +290,9 @@ $.get('../api/user/get_personal_info.php',{/*没有参数*/},function(data){
 										 is_to_take:$("#checkget").is(':checked'),
 										 close_date:$("#close_date").val(),
 										},function(data){
-                      alert(data);
-      //window.location.reload();//刷新任务
+      window.location.reload();//刷新任务
     });
 	});
-
-	
 </script>
 </body>
 </html>

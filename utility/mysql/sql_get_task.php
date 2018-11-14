@@ -10,14 +10,16 @@
 namespace SqlTskDataFuncs
 {
     include_once __DIR__ . '/../basic/db.php';
-    include_once __DIR__ . '/sql_get_user_info.php';
+    include_once __DIR__ . '/../mysql/sql_get_user_info.php';
     use DatabaseBasic;
     use Exception;
     use SqlUsrDataFuncs\DBErrorException;
-    //定义一些异常类...
+    use SqlUsrDataFuncs\check_if_usrname_exist;
+    //引入一些异常类...
     class TskUserNotFoundException extends Exception {}
     class TskDBErrorException extends Exception {}
     class TskFcnInvalidArgException extends Exception{}
+    class OperationOnInvalidTaskIdException extends Exception{}
     //...
     const __ByCreator = 1;
     const __ByOwner = 2;
@@ -36,10 +38,12 @@ namespace SqlTskDataFuncs
      //第三个参数限制完成天数，避免任务列表上显示过多已完成任务。未完成任务不受此参数影响。
         $str_query;
         $pattern;
-        $limit_pattern = '';
+        $limit_pattern = ' AND validity = 1';
+         //说明：被标记为删除的任务validity=0
         if($limit_of_days_from_completion != -1)
         {
-            $limit_pattern = " AND DATEDIFF(CURDATE() , date(`add_date`) ) < $limit_of_days_from_completion";
+            $limit_pattern .= " AND DATEDIFF(CURDATE() , date(`add_date`) ) < $limit_of_days_from_completion";
+
             if($max_num != -1)
                 $limit_pattern .= " LIMIT $max_num";
         }
@@ -110,16 +114,29 @@ namespace SqlTskDataFuncs
     }
     function set_task_status($task_id,$status,$content = NULL)
     {//content:将任务状态设置为进行中时，提供执行任务的用户的用户名
-        if($status = __Ongoing && (! SqlUsrDataFuncs\check_if_usrname_exist($name)))
-            throw new TskFcnInvalidArgException("user to work on the task required");
+     //注意：此函数不检查用户名是否合法，由上层逻辑完成
         $con = DatabaseBasic::get_connection_obj();
-        $query = $con->prepare("UPDATE tasks SET `status` = ? WHERE id = ?");
-        $query->bind_param("ii",$status,$task_id);
+        switch($status)
+        {
+        case __Ongoing:
+            $query = $con->prepare("UPDATE tasks SET `status` = ? ,`owner`=?,`start_date`=CURRENT_TIMESTAMP WHERE id = ?");
+            $query->bind_param("isi",$status,$content,$task_id);
+        break;
+        case __Finished:
+            $query = $con->prepare("UPDATE tasks SET `status` = ? ,`finish_date`= CURRENT_TIMESTAMP WHERE id = ?");
+            $query->bind_param("ii",$status,$task_id);
+        break;
+        default://未定义的特殊状态
+            $query = $con->prepare("UPDATE tasks SET `status` = ? WHERE id = ?");
+            $query->bind_param("ii",$status,$task_id);
+        }
         if($query == false)
             throw new DBErrorException($con->error);
         $is_successful = $query -> execute();
         if(!$is_successful)
             throw new DBErrorException($con->error);
+        if($con->affected_rows==0)
+            throw new OperationOnInvalidTaskIdException("Tried to set status for a non-existing task");
     }
     function progress_task($task_id,$hours_gone)//增加一个任务已经完成的时间
     {
@@ -139,7 +156,10 @@ namespace SqlTskDataFuncs
         $is_successful = $query -> execute();
         if(!$is_successful)
             throw new DBErrorException($con->error);
+        if($con->affected_rows()==0)
+            throw new OperationOnInvalidTaskIdException("Tried to delete a non-existing task");
     }
+
 
 
 }

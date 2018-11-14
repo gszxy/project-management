@@ -23,13 +23,12 @@ namespace SqlUsrDataFuncs
         $find_name_query -> bind_param('s', $_name);
         
         if($find_name_query->execute()) //这个函数返回值是查询是否成功
-        {
-            $find_name_query -> store_result();
-            if($find_name_query->num_rows > 1)
-                throw new Exception("username not unqiue");
-            else if($find_name_query->num_rows == 0)
-                throw new UserNotFoundException("user not found");
+        {   
             $result = $find_name_query->get_result();
+            if($result->num_rows > 1)
+                throw new Exception("username not unqiue");
+            else if($result->num_rows == 0)
+                throw new UserNotFoundException("user not found");
             return mysqli_fetch_array($result,MYSQLI_ASSOC);
         }
     }
