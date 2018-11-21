@@ -98,4 +98,28 @@ namespace SqlUsrDataFuncs
     {
         
     }
+
+    function get_complete_user_info()
+    {
+        $con = DatabaseBasic::get_connection_obj();
+        $result = $con->query("SELECT * FROM users"); //记得删除密码那个字段（显然……）
+        $ret = array();
+        while($row = $result->fetch_array(MYSQLI_ASSOC))
+        {
+            unset($row['psd_sha1']);
+            array_push($ret,$row);
+        }
+        return $ret;
+    }
+    function get_user_list()
+    {
+        $con = DatabaseBasic::get_connection_obj();
+        $result = $con->query("SELECT `name` FROM users"); 
+        $ret = array();
+        while($row = $result->fetch_array(MYSQLI_ASSOC))
+        {
+            array_push($ret,$row);
+        }
+        return $ret;
+    }
 }

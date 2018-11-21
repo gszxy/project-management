@@ -31,10 +31,14 @@ class Task {
             {
                 operation_block.children('.t-progress').attr("hidden", "hidden");
                 operation_block.children('.t-finish').attr("hidden", "hidden");
+                
             }
             else if (this.content.status == 2) //进行中
             {
                 operation_block.children('.t-take').attr("hidden", "hidden");
+                if(glb_user_name != this.content.owner)
+                    operation_block.children('.t-finish').attr("hidden", "hidden");
+                //只能完成自己的任务                    
             }
             else //已完成
             {

@@ -91,9 +91,9 @@ li a {
 </head>
 <body>
 <ul>
-  <li><a href="main.html" class="active"><strong>主页</strong> </a></li>
+  <li><a href="/page/main.html" class="active"><strong>主页</strong> </a></li>
   <li><a href="">用户</a></li>
-  <li><a href="">任务</a></li>
+  <li><a href="/page/task/full.html">任务</a></li>
   <li><a href="">项目进度</a></li>
   <li><a href="">业绩</a></li>
 	<li hidden="hidden"><a href="">管理</a></li><!--仅对管理员可见。通过javascript取消隐藏-->
@@ -101,7 +101,7 @@ li a {
   <li style="float:right" id="btn_logout"><a>退出</a></li>
   
 </ul>
-<title></title>
+
 <h1 align="center" style="font-family:Arial, Helvetica, sans-serif;font-size:55px;color:#3399FF">User Page &nbsp;</h1>
 <p>
 </p>

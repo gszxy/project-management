@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>文件管理</title>
+		<meta charset="UTF-8">
+		<link href="/page/css/out/bootstrap.css" rel="stylesheet" type="text/css">
+		<link href="/page/css/common.css" rel="stylesheet" type="text/css">
+		<link href="/page/css/out/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+		<script src="/page/JavaScript/out/jquery-1.11.3.min.js"></script>
+		<script src="/page/JavaScript/out/bootstrap.js"></script>
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+		<style>
+			.list-group-item:hover{
+				background-color:lightblue;
+				cursor:pointer;
+			}
+		.n-nav-t {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			background-color: #69C;
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+		.n-nav {
+			float: left;
+		}
+		ul li a {
+			display: block;
+			color: white;
+			text-align: center;
+			padding: 14px 16px;
+			text-decoration: none;
+		}
+		.task{
+				display: block;
+			}
+		.STYLE2 {
+			font-size: 18px
+		}
+		.STYLE3 {
+			font-size: 24px;
+			font-weight: bold;
+		}
+		.well
+		{
+				display:inline-block;
+			width:90%
+		}
+		.t-delete /*删除任务那几个字是红色的*/
+			{
+				color: crimson;
+			}
+		.t-title
+			{
+				font-weight: bold;
+			}
+			.btn-sm{
+				margin-top: 7px;
+			}
+			.well{
+				bor
+			}
+		</style>
+		</head>
+<body>
+
+<ul class="n-nav-t">
+
+  <li class="n-nav"><a href="" class="active"><strong>主页 </strong> </a></li>
+
+  <li class="n-nav"><a href="">用户</a></li>
+
+  <li class="n-nav"><a href="">任务</a></li>
+
+  <li class="n-nav"><a href="">进度</a></li>
+
+  <li class="n-nav"><a href="">业绩</a></li>
+
+
+  <li class="n-nav" style ="float:right"><a class="active" href="../Documents/login.html">登出</a></li>
+
+</ul>
+	
+<div class="row" style="padding-top: 50px">
+  <div class="col-xs-3"></div>
+  <div class="col-xs-6">
+	<h3>文件列表</h3>
+  <ol class="breadcrumb">
+	<li><a href="#">Home</a></li>
+	<li><a href="#">Library</a></li>
+	<li class="active l-filelist">Data</li>
+</ol>
+    <div class="well">文件列表区。备用</div>
+  </div><!--end of the column -->
+  <div class="col-xs-3">
+  <div style="margin-top: 35px;margin-left: 40px;margin-right: 100px">
+	<ul class="list-group">
+  <li class="list-group-item" id="op_upload">
+	  上传文件
+  </li>
+  <li class="list-group-item">刷新文件列表</li>
+  <li class="list-group-item">文件版本管理（敬请期待）</li>
+  <li class="list-group-item">搜索文件（开发中）</li>
+  <li class="list-group-item">......</li>
+</ul>
+	</div>
+	</div>
+</div>
+<input type="file" id="upload_info" style="display:none" value="">
+
+<script>
+
+$("#op_upload").click(function(){
+	$("#upload_info").trigger('click');
+	
+});
+	
+$('#upload_info').change(function(){
+	//首先获取上传链接
+	$.get("/api/file/get_link.php",{type:'upload'},function(data){
+		//根据获取到的链接开始上传
+		var link = data.link;
+		console.log(link);
+		var file = $('#upload_info').val();
+		$.ajax({type:'put',
+				url: link,                
+				data: file,          
+			   }).success(function(data){
+			    alert(data);
+		        }).error(function () {
+			      alert("上传失败");
+		});
+
+	});	
+});
+</script>
+
+
+
+
+</body>
+</html>

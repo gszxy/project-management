@@ -138,13 +138,19 @@ namespace SqlTskDataFuncs
         if($con->affected_rows==0)
             throw new OperationOnInvalidTaskIdException("Tried to set status for a non-existing task");
     }
-    function progress_task($task_id,$hours_gone)//增加一个任务已经完成的时间
+    function progress_task(int $task_id,int $hours_gone)//增加一个任务已经完成的时间
     {
 
     }
     function add_report($task_id,$user,$content)
     {
 
+    }
+    function get_report(int $type = -1, $content)
+    {
+        //ByUniqueId:按照任务id获取全部报告
+        //ByCreator:
+        //默认值：获取所有报告
     }
     function invalidate_task($task_id)
     {//我们删除一个任务的方式不是从数据库中移除，而是将其标记为无效
@@ -156,11 +162,76 @@ namespace SqlTskDataFuncs
         $is_successful = $query -> execute();
         if(!$is_successful)
             throw new DBErrorException($con->error);
-        if($con->affected_rows()==0)
+        if($con->affected_rows==0)
             throw new OperationOnInvalidTaskIdException("Tried to delete a non-existing task");
     }
 
+    function get_user_unfinished_task_breif($type,$name = null) : array
+    {   //获取指定用户未完成任务的大致信息
+        //函数总是返回数组，即使只是查询一个用户的信息
+        //关联数组的索引是用户的名字
+        //步骤一：获取所有未完成任务
+        $con = DatabaseBasic::get_connection_obj();
+        $_name = $con->real_escape_string($name);
 
+        if($type == 'single')
+            $qstr = "SELECT `owner`, SUM(hours_needed)-SUM(hours_gone) AS hours_ongoing,COUNT(id) AS count_ongoing
+                     FROM tasks WHERE `owner`=? AND `status`=2 GROUP BY `owner` ";
+        else if($type == 'all')//获取全部用户的未完成任务数据
+            $qstr = "SELECT `owner`, SUM(hours_needed)-SUM(hours_gone) AS hours_ongoing,COUNT(id) AS count_ongoing
+                     FROM tasks WHERE `status`=2 GROUP BY `owner` ";
+        else
+            throw new TskFcnInvalidArgException('Unrecogized Operation Type');
+        $query = $con->prepare($qstr);
+        if($type == 'single')
+            $query->bind_param("s",$_name);
+        if($query == false)
+            throw new DBErrorException($con->error);
+        $is_successful = $query -> execute();
+        if(!$is_successful)
+            throw new DBErrorException($con->error);
+        $unfinished = $query->get_result();
+        // 步骤二：获取一周内完成的任务  
+        if($type == 'single')
+            $qstr = "SELECT `owner`, COUNT(id) AS count_finished FROM tasks WHERE `owner`=? AND `status` = 3 
+                 AND DATEDIFF(CURDATE() , date(`finish_date`) ) <= 7 GROUP BY `owner` ORDER BY id ";
+        else if($type == 'all')//获取全部用户的未完成任务数据
+            $qstr = "SELECT `owner`, COUNT(id) AS count_finished FROM tasks WHERE `status` = 3 
+                 AND DATEDIFF(CURDATE() , date(`finish_date`) ) <= 7 GROUP BY `owner` ORDER BY id ";
+        //必须orderbyid，这样下面的循环才得以正确的匹配每个用户的信息
+        $query = $con->prepare($qstr);
+        if($type == 'single')
+            $query->bind_param("s",$_name);
+        if($query == false)
+            throw new DBErrorException($con->error);
+        $is_successful = $query -> execute();
+        if(!$is_successful)
+            throw new DBErrorException($con->error);
+        $finished = $query->get_result();
+        //处理数据
+        $result = array ();
+ 
+        while($row_unfinished = $unfinished->fetch_array(MYSQLI_ASSOC))
+        {       
+            $result[$row_unfinished['owner']] = 
+            ["count_ongoing"=>$row_unfinished['count_ongoing'],"hours_ongiong"=>$row_unfinished['hours_ongoing']];
+
+            //向关联数组添加了一个这样的键值对
+            //名字 => 一个包含未完成和完成了的任务数量的关联数组
+        }
+        while($row_finished = $finished->fetch_array(MYSQLI_ASSOC))
+        {//必须分开处理，因为说不定一个用户没有未完成/进行中的人物
+            $name_in_finished = $row_finished['owner'];
+            if(isset($result[$name_in_finished]))
+                $result[$name_in_finished]["count_finished"] = $row_finished['count_finished'];
+            else
+                $result[$name_in_finished] = ["count_finished"=>$row_finished['count_finished']];
+            //含义同上
+        }
+
+        return $result;
+
+    }
 
 }
 

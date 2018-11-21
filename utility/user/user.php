@@ -8,6 +8,8 @@
  *
  *张笑语 10月9日 新添加
  *张笑语 10月15日 初步功能实现（用户登陆注册部分）
+ *张笑语 10月29日 类型实现和基本测试
+ *张笑语 11月16日 添加权限获取功能
  */
 
 namespace WebsiteUser
@@ -19,6 +21,7 @@ namespace WebsiteUser
     use function SqlUsrDataFuncs\check_password;
     use function SqlUsrDataFuncs\add_usr;
     use function SqlUsrDataFuncs\get_usr_info;
+    use function SqlUsrDataFuncs\get_user_list;
     use Exception;
     //定义一些异常类
     class UsernameOccupiedException extends Exception{}
@@ -37,7 +40,8 @@ namespace WebsiteUser
             $this->is_login = $info['is_login'];
             $this->name = $info['name'];
             //$this->usr = $info['id'];
-            $this->usr_privilege  = 2;
+            if($this->is_login)
+                $this->usr_privilege  = get_usr_info($this->name)['identity'];
         }
         public function login(string $usrname, string $psd_sha1,bool $is_to_remember = false) : array 
         {
@@ -48,6 +52,8 @@ namespace WebsiteUser
             {
                 $this->name = $usrname;
                 $this->session->usr_login_set_session_and_cookie($usrname,$is_to_remember);
+                //张笑语 11月16日添加：权限获取
+                $this->usr_privilege  = get_usr_info($this->name)['identity'];
             }
             return $array_check_result;            
         }
@@ -72,6 +78,10 @@ namespace WebsiteUser
         public function get_is_login()
         {
             return $this->is_login;
+        }
+        public function get_team_member_list()
+        {
+            return get_user_list();
         }
     }
 }

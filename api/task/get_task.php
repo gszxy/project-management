@@ -41,7 +41,7 @@ case 'team':
         $untaken = $task_user->get_team_untaken_task();
         $ongoing = $task_user->get_team_ongoing_task();
         $finished = $task_user->get_team_finished_task($limit_of_days_from_completion);
-        $result = ['untaken'=>$untaken,'ongoing'=>$ongoing,'$finished'=>$finished];
+        $result = ['untaken'=>$untaken,'ongoing'=>$ongoing,'finished'=>$finished];
    // }catch(Exception $exp)
    // {
    //     http_response_code(500);

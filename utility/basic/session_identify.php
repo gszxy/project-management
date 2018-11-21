@@ -38,7 +38,7 @@ namespace SessionProcess
                     $claimed_name = $_COOKIE["username"];
                     $claimed_s_psd = $_COOKIE["session_psd"];
                     $legal_s_psd = sha1($claimed_name.self::$magic_str);
-                    //用户名和magic_str拼接后使用sha1算法单项加密，然后比对用户提交的session_psd（页面上注册或登录时使用相同方法生成）
+                    //用户名和magic_str拼接后使用sha1算法单向加密，然后比对用户提交的session_psd（页面上注册或登录时使用相同方法生成）
                     //这样一来可以确定保持登录状态的cookie不是伪造的
                     if($claimed_s_psd == $legal_s_psd)
                     {
@@ -62,7 +62,7 @@ namespace SessionProcess
                 return ['is_login' => false,'name' =>''];
         }
         public function usr_login_set_session_and_cookie
-               (string $name,bool $is_to_remember = false,int $valid_time = 2592000) : void
+               (string $name,bool $is_to_remember = false,int $valid_time = 2592000) : void //这个默认时间是一个月
         {
             $new_s_psd = sha1($name.self::$magic_str);
             $_SESSION["username"] = $name;

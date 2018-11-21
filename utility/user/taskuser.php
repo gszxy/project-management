@@ -92,12 +92,14 @@ namespace WebsiteUser
             {
                 case 'take':
                     //content要求：NULL
-                    if(get_task(__ByUniqueId,$task_id)['status'] != __Untaken)//显然，只能领取未领取任务
+                    if(get_task(__ByUniqueId,$task_id)[0]['status'] != __Untaken)//显然，只能领取未领取任务
+                    {
                         throw new FcnParamIllegalException("Tried to take a task which has alredy been taken");
+                    }
                     set_task_status($task_id,2/*ongoing*/,$this->name);
                 break;
                 case 'finish':
-                    if(get_task(__ByUniqueId,$task_id)['owner'] != $this->name)//显然，只能完成自己负责的任务
+                    if(get_task(__ByUniqueId,$task_id)[0]['owner'] != $this->name)//显然，只能完成自己负责的任务
                         throw new TaskUserNotAuthorizedException("Tried to finish a task for other users");
                         //毫不留情地抛出异常，因为前端应该也必须检查这个逻辑
                     set_task_status($task_id,3/*finished*/);
@@ -107,7 +109,7 @@ namespace WebsiteUser
                     add_report($task_id,$this->name,$content);
                 break;
                 case 'delete':
-                    if(get_task(__ByUniqueId,$task_id)['creator'] == $this->name)
+                    if(get_task(__ByUniqueId,$task_id)[0]['creator'] == $this->name)
                         $this->assert_user_authorized($this->delete_self_created_task_privilege_requirement);
                     else
                         $this->assert_user_authorized($this->delete_any_task_privilege_requirement);
@@ -150,7 +152,7 @@ namespace WebsiteUser
         function rank_task(int $task_id,int $score)
         {
             assert_user_authorized($rank_task_privilege_requirement);
-            $tsk = get_task(__ByUniqueId,$task_id);
+            $tsk = get_task(__ByUniqueId,$task_id)[0];
             if( !$tsk )//如果返回数组为空，即找不到这个任务，或者任务没有完成
                 throw new FcnParamIllegalException('Task to rank does not exist');
             else if($tsk['status']!=3)
