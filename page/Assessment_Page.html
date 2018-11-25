@@ -3,11 +3,12 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="title_name">用户</title>
+<title id="title_name">个人业绩</title>
 <meta charset="UTF-8">
 <link href="/page/css/out/bootstrap.css" rel="stylesheet" type="text/css">
 	<script src="JavaScript/out/jquery-1.11.3.min.js"></script>
 	<link href="/page/css/common.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="/page/JavaScript/page_init.js" charset="UTF-8"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -67,18 +68,18 @@ li a {
 
 </head>
 <body>
-<ul>
-  <li><a href="" class="active"><strong>主页</strong> </a></li>
-  <li><a href="">用户</a></li>
-  <li><a href="">任务</a></li>
-  <li><a href="">项目进度</a></li>
-  <li><a href="">业绩</a></li>
-	<li hidden="hidden"><a href="">管理</a></li><!--仅对管理员可见。通过javascript取消隐藏-->
-	<li style="float:right" id="txt_username"></li>
-  <li style="float:right" id="btn_logout"><a>退出</a></li>
-  
-</ul>
-<title></title>
+	<ul>
+		<li><a href="/page/main.html" class="active"><strong>主页</strong> </a></li>
+		<li><a href="/page/task/full.html">任务</a></li>
+		<li><a href="/page/Process_Page.html">项目进度</a></li>
+		<li><a href="/page/Assessment_Page.html">业绩</a></li>
+		<li hidden="hidden" id="admin_link"><a href="/page/admin/teamview.html"><strong>管理</strong></a></li>
+		<!--仅对管理员可见。通过javascript取消隐藏-->
+		
+		<li style="float:right" id="btn_logout"><a><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>退出</a></li>
+		<li style="float:right" ><a id="txt_username"></a></li>
+	</ul>
+
 <h1 align="center" style="font-family:Arial, Helvetica, sans-serif;font-size:55px;color:#3399FF">Project Assesment &nbsp;</h1>
 <p>
 </p>

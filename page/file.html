@@ -76,21 +76,16 @@
 		</head>
 <body>
 
-<ul class="n-nav-t">
-
-  <li class="n-nav"><a href="" class="active"><strong>主页 </strong> </a></li>
-
-  <li class="n-nav"><a href="">用户</a></li>
-
-  <li class="n-nav"><a href="">任务</a></li>
-
-  <li class="n-nav"><a href="">进度</a></li>
-
-  <li class="n-nav"><a href="">业绩</a></li>
-
-
-  <li class="n-nav" style ="float:right"><a class="active" href="../Documents/login.html">登出</a></li>
-
+<ul class="n-nav">
+  <li class="n-nav-t"><a href="/page/main.html" class="active"><strong>主页</strong> </a></li>
+  <li class="n-nav-t"><a href="/page/task/full.html">任务</a></li>
+  <li class="n-nav-t"><a href="/page/Process_Page.html">项目进度</a></li>
+  <li class="n-nav-t"><a href="/page/Assessment_Page.html">业绩</a></li>
+  <li class="n-nav-t" hidden="hidden" id="admin_link"><a href="/page/admin/teamview.html"><strong>管理</strong></a></li>
+  <!--仅对管理员可见。通过javascript取消隐藏-->
+  
+  <li style="float:right" id="btn_logout"><a><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>退出</a></li>
+  <li style="float:right" ><a id="txt_username"></a></li>
 </ul>
 	
 <div class="row" style="padding-top: 50px">
@@ -119,7 +114,7 @@
 	</div>
 </div>
 <input type="file" id="upload_info" style="display:none" value="">
-
+<script type="text/javascript" src="/page/JavaScript/page_init.js" charset="UTF-8"></script>
 <script>
 
 $("#op_upload").click(function(){

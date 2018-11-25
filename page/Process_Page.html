@@ -3,11 +3,14 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="title_name">用户</title>
+<title id="title_name">团队项目进度</title>
 <meta charset="UTF-8">
-<link href="https://prj.knightdusk.cn/page/css/out/bootstrap.css" rel="stylesheet" type="text/css">
-	<script src="https://prj.knightdusk.cn/JavaScript/out/jquery-1.11.3.min.js"></script>
-	<link href="https://prj.knightdusk.cn/page/css/common.css" rel="stylesheet" type="text/css">
+		<link href="/page/css/out/bootstrap.css" rel="stylesheet" type="text/css">
+		<link href="/page/css/common.css" rel="stylesheet" type="text/css">
+		<link href="/page/css/out/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+		<script src="/page/JavaScript/out/jquery-1.11.3.min.js"></script>
+		<script src="/page/JavaScript/out/bootstrap.js"></script>
+<script src="JavaScript/out/echarts.min.js"></script>
 <style>
 
 	div{margin:auto}
@@ -22,6 +25,7 @@
     font-size: 16px;
     margin: 4px 2px;
     cursor: pointer;
+		
 }
 	
 
@@ -55,27 +59,38 @@ li a {
 		<li><a href="/page/main.html" class="active"><strong>主页</strong> </a></li>
 		<li><a href="/page/task/full.html">任务</a></li>
 		<li><a href="/page/Process_Page.html">项目进度</a></li>
-		<li><a href="">业绩</a></li>
+		<li><a href="/page/Assessment_Page.html">业绩</a></li>
 		<li hidden="hidden" id="admin_link"><a href="/page/admin/teamview.html"><strong>管理</strong></a></li>
 		<!--仅对管理员可见。通过javascript取消隐藏-->
 		
 		<li style="float:right" id="btn_logout"><a><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>退出</a></li>
 		<li style="float:right" ><a id="txt_username"></a></li>
 	</ul>
-<title></title>
+<div class="container" style="padding-top:30px">
+	 <div class="alert alert-danger" role="warning"><b>提示：</b>此页面尚需完善和后端连接。</div>
+	</div>
 <h1 align="center" style="font-family:Arial, Helvetica, sans-serif;font-size:55px;color:#3399FF">Project Assesment &nbsp;</h1>
 <p align="center" style="font-family:Arial, Helvetica, sans-serif;font-size:55px;color:#3399FF">&nbsp;</p>
-<p align="center" style="font-family:Arial, Helvetica, sans-serif;font-size:55px;color:#3399FF"><span class="STYLE6">Project Process </span></p>
-<p>
+<p align="center" style="font-family:Arial, Helvetica, sans-serif;font-size:55px;color:#3399FF"><span class="STYLE6">项目进度 </span></p>
+
 
 <div class="outlayer" style="width:50%"> 
 	<div class="progress">
-	  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 10%;">
+	  <div class="progress-bar" role="progressbar" aria-valuenow="93" aria-valuemin="0" aria-valuemax="100" style="width: 10%;">
 		<span class="sr-only">60% Complete</span>
 	  </div>
 	</div>
 </div>
-</p>
+	<div class="container" style="width=1200px;height:675px" id="chart-burndown">
+	
+	
+	</div>
+		<div class="container" style="width=1200px;height:675px"  id="chart-calender">
+	
+	
+	</div>
+	
+
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
@@ -84,5 +99,98 @@ li a {
   <input name="button1" type="submit" align="center" class="button" id="button1" value="Back to Main" >
 </div>
 </p>
+<script type="text/javascript" src="/page/JavaScript/page_init.js" charset="UTF-8"></script>
+<script>
+ var burndown = echarts.init(document.getElementById('chart-burndown'));
+ option = {
+	 title: {
+        top: 30,
+        left: 'center',
+        text: 'Burndown Chart'
+    },
+    xAxis: {
+        type: 'category',
+        data: ['11/1', '11/2', '11/3', '11/4', '11/5', '11/6', '11/7','11/8']
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        data: [140, 135, 86, 43, 25, 20, 16,3],
+        type: 'line',
+		color:'rgba(76,150,255,1)',
+		areaStyle:{ color: ['rgba(76,195,252,0.7)']}
+    },{
+		data: [140, 120, 100, 80, 60, 40, 20,0],
+        type: 'line'
+	}]
+};
+	burndown.setOption(option);
+function getVirtulData(year) {
+    year = year || '2017';
+    var date = +echarts.number.parseDate(year + '-01-01');
+    var end = +echarts.number.parseDate((+year + 1) + '-01-01');
+    var dayTime = 3600 * 24 * 1000;
+    var data = [];
+    for (var time = date; time < end; time += dayTime) {
+        data.push([
+            echarts.format.formatTime('yyyy-MM-dd', time),
+            Math.floor(Math.random() * 100)
+        ]);
+    }
+    return data;
+}
+var calender = echarts.init(document.getElementById('chart-calender'));
+option_second = {
+    title: {
+        top: 30,
+        left: 'center',
+        text: '每日任务完成数量'
+    },
+    tooltip : {},
+    visualMap: {
+        min: 0,
+        max: 100,
+        type: 'piecewise',
+        orient: 'horizontal',
+        left: 'center',
+        top: 65,
+        textStyle: {
+            color: '#CC0033'
+        }
+    },
+    calendar: {
+        top: 120,
+        left: 30,
+        right: 30,
+        cellSize: ['auto', 13],
+        range: '2017',
+        itemStyle: {
+            normal: {borderWidth: 0.5},
+					color: {
+    type: 'linear',
+    x: 0,
+    y: 0,
+    x2: 0,
+    y2: 1,
+    colorStops: [{
+        offset: 0, color: 'white' // 0% 处的颜色
+    }, {
+        offset: 1, color: 'blue' // 100% 处的颜色
+    }],
+    globalCoord: false // 缺省为 false
+        },
+        yearLabel: {show: false}
+    },
+    series: {
+        type: 'heatmap',
+        coordinateSystem: 'calendar',
+        data: getVirtulData(2017)
+    }
+	}
+};
+	calender.setOption(option_second);
+
+</script>
 </body>
 </html>

@@ -32,7 +32,7 @@ namespace WebsiteUser
         protected $is_login;
         protected $name;
         protected $usr_id;
-        protected $usr_privilege = 1; //用户获取任务信息的权限等级
+        protected $usr_privilege = 1; //用户获取任务信息、进行各种操作的权限等级
         public function __construct()
         {
             $this ->session = new SessionUser();
@@ -54,6 +54,7 @@ namespace WebsiteUser
                 $this->session->usr_login_set_session_and_cookie($usrname,$is_to_remember);
                 //张笑语 11月16日添加：权限获取
                 $this->usr_privilege  = get_usr_info($this->name)['identity'];
+                //此处命名有严重失误。这个get_usr_info是SqlUsrDataFuncs命名空间的，不要和下面的成员函数搞混了
             }
             return $array_check_result;            
         }
@@ -65,9 +66,9 @@ namespace WebsiteUser
         }
         public function get_user_info()
         {
-            //todo:进一步返回用户权限等级
+            
             return get_usr_info($this->name);
-
+            //此处命名有严重失误。这个get_usr_info是SqlUsrDataFuncs命名空间的，不要和成员函数搞混了
         }
         public function logout()
         {

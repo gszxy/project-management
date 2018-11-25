@@ -247,7 +247,7 @@ li a {
 //加载全部任务
 $(document).ready(function(){
 
-	$.get("../api/task/get_task.php",{type:"team"},function(tskdata){
+	$.get("/api/task/get_task.php",{type:"team"},function(tskdata){
 		var untaken = tskdata.result.untaken;
 		var ongoing = tskdata.result.ongoing;
         var finished = tskdata.result.finished;

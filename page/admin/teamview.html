@@ -52,7 +52,7 @@ ul li a {
     <li><a href="/page/main.html" class="active"><strong>主页</strong> </a></li>
     <li><a href="/page/task/full.html">任务</a></li>
     <li><a href="/page/Process_Page.html">项目进度</a></li>
-    <li><a href="">业绩</a></li>
+    <li><a href="/page/Assessment_Page.html">业绩</a></li>
     <li hidden="hidden" id="admin_link"><a href="/page/admin/teamview.html"><strong>管理</strong></a></li>
     <!--仅对管理员可见。通过javascript取消隐藏-->
     
@@ -60,9 +60,14 @@ ul li a {
     <li style="float:right" ><a id="txt_username"></a></li>
   </ul>
 	
-<div class="container" style="padding-top:30px">
-	 <div class="alert alert-warning" role="alert"><b>提示：</b>管理员数据页面。</div>
-  <table id="userslist" class="display cell-border" style="padding-top: 30px;width=100%">
+<div class="row" style="padding-top: 40px">
+	  <div class="col-lg-2">
+
+	</div>
+	  <div class="col-lg-7">
+
+  <div class="alert alert-warning" role="alert"><b>提示：</b>管理员数据页面。</div>
+  <table id="userslist" class="display cell-border" style="padding-top: 30px">
     <thead>
       <tr class="table_head">
         <th>id</th>
@@ -77,6 +82,22 @@ ul li a {
     </tbody>
   </table>
 </div>
+	  <div class="col-lg-3">
+		  <div class="panel panel-default" style="margin-top:30px;margin-right: 60px;margin-left: 15px">
+      <div class="panel-heading">
+        <h3 class="panel-title">快速操作</h3>
+      </div>
+      <div class="panel-body"> 
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"> 添加任用户 </button>
+		<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#report"> 冻结用户 </button>
+		<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#report"> 修改用户权限 </button>
+      </div>
+      <div class="panel-footer">Panel footer</div>
+    </div>
+	</div>
+</div>
+
 <script type="text/javascript" src="/page/JavaScript/page_init.js" charset="UTF-8"></script>
 <script type="text/javascript" src="/page/JavaScript/tsk_prs.js" charset="UTF-8"></script>
 <script type="text/javascript" src="/asset/datatables/datatables.min.js" charset="UTF-8"></script>
